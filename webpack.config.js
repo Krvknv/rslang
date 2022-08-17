@@ -21,7 +21,7 @@ module.exports = {
         }),
         new ESLintPlugin({ extensions: 'ts' }),
         new CleanWebpackPlugin(),
-        new FaviconsWebpackPlugin('src/assets/svg/favicon.png'),
+        new FaviconsWebpackPlugin('src/assets/png/favicon.png'),
         new CopyPlugin({
             patterns: [
                 {
