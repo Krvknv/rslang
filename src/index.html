@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title><%= htmlWebpackPlugin.options.title %></title>
     </head>
-    <body>
+    <body class="body">
         <header class="header">
             <div class="container header__container">
                 <span class="logo">lang</span>
@@ -22,5 +22,21 @@
             </div>
         </header>
         <main></main>
+        <footer class="footer">
+            <div class="container footer__container">
+                <div class="links">
+                    <span class="links__title">Гитхаб аккаунты:</span>
+                    <ul class="links__list">
+                        <li class="links__item"><a href="https://github.com/kolyagae" target="_blank">Евгений</a></li>
+                        <li class="links__item"><a href="https://github.com/VLeshkov" target="_blank">Виктор</a></li>
+                        <li class="links__item"><a href="https://github.com/Krvknv" target="_blank">Кристина</a></li>
+                    </ul>
+                </div>
+                <span class="year">2022</span>
+                <a class="logo-rs" href="https://rs.school/js/" target="_blank"
+                    ><img src="./assets/svg/logo-rs.svg" alt="logo-rs"
+                /></a>
+            </div>
+        </footer>
     </body>
 </html>
