@@ -8,6 +8,18 @@
     </head>
     <body class="body">
         <header class="header">
+            <div class="cover">
+                <div class="modal">
+                    <button class="cross"></button>
+                    <h2 class="title modal__title">Вход</h2>
+                    <form class="modal__form" action="">
+                        <input class="modal__input" type="text" placeholder="E-mail" />
+                        <input class="modal__input" type="text" placeholder="Пароль" />
+                        <button class="btn modal__btn" disabled>войти</button>
+                    </form>
+                    <button class="subtitle">Регистрация</button>
+                </div>
+            </div>
             <div class="container header__container">
                 <span class="logo">lang</span>
                 <nav class="nav">
@@ -18,7 +30,7 @@
                         <li class="nav__item"><a href="#statistics">статистика</a></li>
                     </ul>
                 </nav>
-                <div class="button"><button class="enter">вход</button></div>
+                <div class="button"><button class="btn btn-enter">вход</button></div>
             </div>
         </header>
         <main class="main">
