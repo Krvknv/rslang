@@ -1,5 +1,5 @@
 import { checkValidity } from '../controller/check-email';
-import { hideModal, showModal } from '../controller/show-modal';
+import { hideModal, showModal } from './modal';
 import { registerHomePage } from '../model/home-page';
 
 export const startApp = () => {
