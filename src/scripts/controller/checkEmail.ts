@@ -9,5 +9,10 @@ export const checkValidity = (event: Event) => {
         modalBtn.disabled = true;
         node.classList.add('invalid');
     }
+
+    if (node.value === '') {
+        node.classList.remove('invalid');
+    }
+
     console.log(node);
 };
