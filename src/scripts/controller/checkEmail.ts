@@ -13,6 +13,4 @@ export const checkValidity = (event: Event) => {
     if (node.value === '') {
         node.classList.remove('invalid');
     }
-
-    console.log(node);
 };
