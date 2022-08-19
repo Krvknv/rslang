@@ -1,11 +1,17 @@
 import { checkValidity } from '../controller/check-email';
 import { hideModal, showModal } from '../controller/show-modal';
-import { registerHomePage } from '../model/home-page';
+import { changePage } from '../model/show-right-page';
 
 export const startApp = () => {
-    registerHomePage();
+    changePage();
 
     // handlers
+    //
+
+    // show correct page
+    window.addEventListener('hashchange', changePage);
+
+    // show and hide modal window
     const btnEnter = document.querySelector('.btn-enter');
     const cross = document.querySelector('.cross');
     const cover = document.querySelector('.cover');
