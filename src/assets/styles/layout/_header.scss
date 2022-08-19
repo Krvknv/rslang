@@ -85,7 +85,11 @@
         height: 60px;
         padding: 0px 10px;
         border-radius: 10px;
-        border: 1px solid #000000;
+        border: 1px solid $mainColor;
+        outline: none;
+    }
+    &__input.invalid {
+        border-color: $alertColor;
     }
 }
 .modal__btn:disabled {

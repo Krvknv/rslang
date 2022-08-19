@@ -1,3 +1,4 @@
+import { checkValidity } from '../controller/checkEmail';
 import { hideModal, showModal } from '../controller/showModal';
 import { registerHomePage } from '../modal/homePage';
 
@@ -13,4 +14,7 @@ export const startApp = () => {
 
     cross.addEventListener('click', hideModal);
     cover.addEventListener('click', hideModal);
+
+    const inputEmail = document.querySelector('.email');
+    inputEmail.addEventListener('input', checkValidity);
 };
