@@ -88,6 +88,9 @@
         border: 1px solid $mainColor;
         outline: none;
     }
+    &__input.invalid {
+        border-color: $alertColor;
+    }
 }
 .modal__btn:disabled {
     background-color: #bfbfbf;
