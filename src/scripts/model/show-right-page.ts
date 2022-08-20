@@ -1,3 +1,4 @@
+import { renderGameMenu, menuContent } from '../view/render-game-menu';
 import { registerHomePage } from './home-page';
 
 export const changePage = () => {
@@ -7,8 +8,10 @@ export const changePage = () => {
         case 'textbook':
             break;
         case 'audiochallenge':
+            renderGameMenu(menuContent.gameAudioChallenge, menuContent.gameAudioChallengeDescription);
             break;
         case 'sprint':
+            renderGameMenu(menuContent.gameSprint, menuContent.gameSprintDescription);
             break;
         case 'statistics':
             break;
