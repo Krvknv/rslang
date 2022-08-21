@@ -14,3 +14,10 @@ export type Tword = {
     textMeaningTranslate: string;
     wordTranslate: string;
 };
+
+export type Ttextbook = {
+    page: number;
+    group: number;
+    pageColor: string;
+    audio: HTMLAudioElement[];
+};

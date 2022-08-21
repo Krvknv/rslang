@@ -1,4 +1,6 @@
-import { getWords } from './api/constants';
+import { changeGroup, changePageNumber, makeSound } from '../controller/textbook-handlers';
+import { getWords } from './api/get-words';
+import { textbook } from './store';
 import { Tword } from './types';
 
 const createNode = (tag: string, className: string) => {
@@ -8,7 +10,39 @@ const createNode = (tag: string, className: string) => {
     return item;
 };
 
-const createCard = (data: Tword) => {
+const createTitle = () => {
+    const title = createNode('h2', 'title');
+    title.textContent = 'Учебник';
+    title.classList.add('textbook-title');
+
+    return title;
+};
+
+const createGroupBtn = (color: string, id: number) => {
+    const button = document.createElement('button');
+
+    button.classList.add('btn-group');
+    button.id = String(id);
+    button.textContent = String(id);
+    button.style.backgroundColor = color;
+
+    return button;
+};
+
+const createBlockBtns = () => {
+    const buttonsWrapper = createNode('div', 'btn-wrapper');
+    const colors = ['#FFB775', '#F38C8C', '#A6FE97', '#E0C2FE', '#A3FBEB', '#9BA5FF'];
+
+    for (let i = 1; i <= 6; i++) {
+        const button = createGroupBtn(colors[i - 1], i);
+        buttonsWrapper.append(button);
+    }
+    buttonsWrapper.addEventListener('click', changeGroup);
+
+    return buttonsWrapper;
+};
+
+export const createCard = (data: Tword) => {
     const card = createNode('div', 'card');
 
     const image = createNode('div', 'card__img');
@@ -48,6 +82,7 @@ const createCard = (data: Tword) => {
     exampleTrans.textContent = data.textExampleTranslate;
 
     const voice = createNode('div', 'card__voice');
+    voice.addEventListener('click', makeSound.bind(null, data.audio, data.audioMeaning, data.audioExample));
 
     example.append(exapleTitile, exampleSen, exampleTrans);
 
@@ -58,15 +93,52 @@ const createCard = (data: Tword) => {
     return card;
 };
 
-export const showCards = async () => {
-    const main = document.querySelector('.main') as HTMLElement;
-    const cardWrapper = createNode('div', 'cards-wrapper');
-    const words = await getWords(0, 0);
+export const createPagination = () => {
+    const pagination = createNode('div', 'pagination');
+
+    const prevBtn = createNode('button', 'prev-btn');
+    prevBtn.textContent = '<';
+    const nextBtn = createNode('button', 'next-btn');
+    nextBtn.textContent = '>';
+
+    const number = createNode('span', 'number');
+    number.textContent = `${textbook.page}/30`;
+
+    pagination.append(prevBtn, number, nextBtn);
+    pagination.addEventListener('click', changePageNumber);
+
+    return pagination;
+};
+
+export const updateCards = async () => {
+    const cardWrapper = document.querySelector('.cards-wrapper');
+
+    const words = await getWords(textbook.page - 1, textbook.group - 1);
+
+    cardWrapper.innerHTML = null;
 
     for (const word of words) {
         const card = createCard(word);
         cardWrapper.append(card);
     }
+};
+
+export const showCards = async () => {
+    const main = document.querySelector('.main') as HTMLElement;
+    const title = createTitle();
+    const buttonsWrapper = createBlockBtns();
+    const cardWrapper = createNode('div', 'cards-wrapper');
+    const pagination = createPagination();
+
+    const words = await getWords(textbook.page - 1, textbook.group - 1);
+
+    main.style.backgroundColor = textbook.pageColor;
+
+    for (const word of words) {
+        const card = createCard(word);
+        cardWrapper.append(card);
+    }
+
     main.innerHTML = null;
-    main.append(cardWrapper);
+    main.append(title, buttonsWrapper, cardWrapper, pagination);
 };

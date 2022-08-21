@@ -130,12 +130,14 @@ const registerTeam = () => {
 };
 
 export const registerHomePage = () => {
-    const main = document.querySelector('.main');
+    const main = document.querySelector('.main') as HTMLElement;
     const mainContainer = document.createElement('div');
     mainContainer.classList.add('main__container', 'container');
     const heroSection = registerHero();
     const advantageSectiont = registerAdvantage();
     const teamSection = registerTeam();
+
+    main.style.backgroundColor = '#fff';
 
     mainContainer.append(heroSection, advantageSectiont, teamSection);
 
