@@ -1,5 +1,6 @@
 import { ModalState } from '../model/modal';
 import { checkEmailValidity, checkPasswordValidity } from '../controller/modal';
+import { signIn, signUp } from '../controller/auth';
 
 const renderCover = (): HTMLElement => {
     const cover = document.createElement('div');
@@ -137,4 +138,16 @@ export const showModal = () => {
 
     const cross = document.getElementById('modal-close');
     cross.addEventListener('click', hideModal);
+
+    const modalBtn = document.getElementById('modal-btn') as HTMLElement;
+    modalBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        const user = {
+            email: (inputEmail as HTMLInputElement).value,
+            password: (inputPassword as HTMLInputElement).value,
+        };
+
+        if (modalBtn.dataset.role === 'signin') signIn(user);
+        if (modalBtn.dataset.role === 'signup') signUp(user);
+    });
 };
