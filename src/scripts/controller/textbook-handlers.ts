@@ -58,9 +58,14 @@ export const changePageNumber = (event: Event) => {
 };
 
 export const makeSound = (...arg: [string, string, string, Event]) => {
+    const voiceArr = document.querySelectorAll('.card__voice');
     let list = arg.slice(0, 3);
     const audioElements: HTMLAudioElement[] = [];
     if (textbook.audio.length === 0) {
+        voiceArr.forEach((item) => {
+            item.classList.remove('on');
+            item.classList.add('mute');
+        });
         for (let i = 0; i < list.length; i++) {
             const audio = new Audio(`http://localhost:3000/${list[i]}`);
             textbook.audio.push(audio);
@@ -79,6 +84,10 @@ export const makeSound = (...arg: [string, string, string, Event]) => {
             }
         }
     } else {
+        voiceArr.forEach((item) => {
+            item.classList.remove('mute');
+            item.classList.add('on');
+        });
         textbook.audio.forEach((item) => item.pause());
         textbook.audio = [];
     }

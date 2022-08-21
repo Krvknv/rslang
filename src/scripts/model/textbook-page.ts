@@ -82,6 +82,7 @@ export const createCard = (data: Tword) => {
     exampleTrans.textContent = data.textExampleTranslate;
 
     const voice = createNode('div', 'card__voice');
+    voice.classList.add('on');
     voice.addEventListener('click', makeSound.bind(null, data.audio, data.audioMeaning, data.audioExample));
 
     example.append(exapleTitile, exampleSen, exampleTrans);

@@ -1,4 +1,3 @@
-
 .card {
     box-shadow: 2px 4px 4px 3px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
@@ -46,15 +45,19 @@
         gap: 10px;
     }
     &__voice {
-        background-image: url('../svg/sound.svg');
+        background-position: center center;
+        background-repeat: no-repeat;
         width: 39px;
         height: 39px;
         position: absolute;
         top: 280px;
         right: 15px;
         cursor: pointer;
-        &:hover {
-            background-image: url('../svg/sound-hover.svg');
-        }
     }
+}
+.on {
+    background-image: url('../svg/sound.svg');
+}
+.mute {
+    background-image: url('../svg/volume-mute.svg');
 }
