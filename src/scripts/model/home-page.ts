@@ -130,10 +130,15 @@ const registerTeam = () => {
 };
 
 export const registerHomePage = () => {
-    const main = document.querySelector('.main__container');
+    const main = document.querySelector('.main');
+    const mainContainer = document.createElement('div');
+    mainContainer.classList.add('main__container', 'container');
     const heroSection = registerHero();
     const advantageSectiont = registerAdvantage();
     const teamSection = registerTeam();
 
-    main.append(heroSection, advantageSectiont, teamSection);
+    mainContainer.append(heroSection, advantageSectiont, teamSection);
+
+    main.innerHTML = null;
+    main.append(mainContainer);
 };

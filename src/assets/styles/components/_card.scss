@@ -1,0 +1,65 @@
+.cards-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 30px;
+    justify-content: center;
+}
+.card {
+    box-shadow: 2px 4px 4px 3px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    color: $fontMainColor;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 420px;
+    position: relative;
+
+    &__img {
+        max-width: 420px;
+        height: 261px;
+        border-radius: 20px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    &__text {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        padding: 0 30px 40px;
+    }
+    &__title {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    &__word {
+        font-size: 24px;
+        line-height: 29px;
+    }
+    &__transcription {
+        font-size: 16px;
+        line-height: 19px;
+    }
+    &__meanining,
+    &__example {
+        display: flex;
+        flex-direction: column;
+        font-size: 16px;
+        line-height: 19px;
+        gap: 10px;
+    }
+    &__voice {
+        background-image: url('../svg/sound.svg');
+        width: 39px;
+        height: 39px;
+        position: absolute;
+        top: 280px;
+        right: 15px;
+        cursor: pointer;
+        &:hover {
+            background-image: url('../svg/sound-hover.svg');
+        }
+    }
+}
