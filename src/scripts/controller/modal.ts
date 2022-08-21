@@ -1,16 +1,20 @@
-export const checkEmailValidity = (event: Event) => {
-    const modalBtn = document.querySelector('.modal__btn') as HTMLButtonElement;
+export const checkEmailValidity = (event: Event): boolean => {
     const node = event.target as HTMLInputElement;
     const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
-    if (EMAIL_REGEXP.test(node.value)) {
-        modalBtn.disabled = false;
-        node.classList.remove('invalid');
-    } else {
-        modalBtn.disabled = true;
-        node.classList.add('invalid');
-    }
 
     if (node.value === '') {
-        node.classList.remove('invalid');
+        return true;
     }
+
+    return EMAIL_REGEXP.test(node.value);
+};
+
+export const checkPasswordValidity = (event: Event): boolean => {
+    const node = event.target as HTMLInputElement;
+
+    if (node.value === '') {
+        return true;
+    }
+
+    return node.value.length >= 8;
 };

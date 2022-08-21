@@ -1,5 +1,5 @@
 import { ModalState } from '../model/modal';
-import { checkEmailValidity } from '../controller/modal';
+import { checkEmailValidity, checkPasswordValidity } from '../controller/modal';
 
 const renderCover = (): HTMLElement => {
     const cover = document.createElement('div');
@@ -17,8 +17,8 @@ const renderModal = (): HTMLElement => {
         <button class="cross" id="modal-close"></button>
         <h2 class="title modal__title" id="modal-title">Вход</h2>
         <form class="modal__form" action="" id="modal-form">
-            <input class="modal__input email" type="text" placeholder="E-mail" />
-            <input class="modal__input" type="text" placeholder="Пароль" />
+            <input class="modal__input email" type="text" placeholder="E-mail" id="input-email"/>
+            <input class="modal__input" type="password" placeholder="Пароль" id="input-password"/>
             <button class="btn modal__btn" id="modal-btn"></button>
         </form>
         <button class="subtitle" id="modal-switch"></button>
@@ -64,6 +64,26 @@ const changeModalTitle = (signState: ModalState): string => {
     }
 };
 
+const toggleDisableBtn = (emailValidity: boolean, passwordValidity: boolean): void => {
+    const modalBtn = document.querySelector('.modal__btn') as HTMLButtonElement;
+    if (emailValidity && passwordValidity) {
+        modalBtn.disabled = false;
+        modalBtn.classList.remove('invalid');
+    } else {
+        modalBtn.disabled = true;
+        modalBtn.classList.add('invalid');
+    }
+};
+
+const toggleInvalidInput = (event: Event, validity: boolean): void => {
+    const node = event.target as HTMLInputElement;
+    if (validity) {
+        node.classList.remove('invalid');
+    } else {
+        node.classList.add('invalid');
+    }
+};
+
 export const hideModal = (): void => {
     const cover = document.getElementById('cover');
     cover.remove();
@@ -89,8 +109,23 @@ export const showModal = () => {
     changeModalBtn(currentModalState);
     changeModalTitle(currentModalState);
 
-    const inputEmail = document.querySelector('.email');
-    inputEmail.addEventListener('input', checkEmailValidity);
+    const inputEmail = document.getElementById('input-email');
+    const inputPassword = document.getElementById('input-password');
+
+    let emailValidity = true;
+    let passwordValidity = true;
+    toggleDisableBtn(emailValidity, passwordValidity);
+
+    inputEmail.addEventListener('input', (event: Event) => {
+        emailValidity = checkEmailValidity(event);
+        toggleDisableBtn(emailValidity, passwordValidity);
+        toggleInvalidInput(event, emailValidity);
+    });
+    inputPassword.addEventListener('input', (event: Event) => {
+        passwordValidity = checkPasswordValidity(event);
+        toggleDisableBtn(emailValidity, passwordValidity);
+        toggleInvalidInput(event, passwordValidity);
+    });
 
     const modalStateSwitch = document.getElementById('modal-switch') as HTMLElement;
     modalStateSwitch.addEventListener('click', () => {
