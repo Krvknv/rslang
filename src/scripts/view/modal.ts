@@ -1,5 +1,5 @@
 import { ModalState } from '../model/modal';
-import { checkValidity } from '../controller/check-email';
+import { checkEmailValidity } from '../controller/modal';
 
 const renderCover = (): HTMLElement => {
     const cover = document.createElement('div');
@@ -90,7 +90,7 @@ export const showModal = () => {
     changeModalTitle(currentModalState);
 
     const inputEmail = document.querySelector('.email');
-    inputEmail.addEventListener('input', checkValidity);
+    inputEmail.addEventListener('input', checkEmailValidity);
 
     const modalStateSwitch = document.getElementById('modal-switch') as HTMLElement;
     modalStateSwitch.addEventListener('click', () => {

@@ -1,4 +1,4 @@
-export const checkValidity = (event: Event) => {
+export const checkEmailValidity = (event: Event) => {
     const modalBtn = document.querySelector('.modal__btn') as HTMLButtonElement;
     const node = event.target as HTMLInputElement;
     const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
