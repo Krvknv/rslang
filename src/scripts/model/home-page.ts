@@ -131,9 +131,12 @@ const registerTeam = () => {
 
 export const registerHomePage = () => {
     const main = document.querySelector('.main__container');
+    const footer = document.querySelector('.footer') as HTMLElement;
     const heroSection = registerHero();
-    const advantageSectiont = registerAdvantage();
+    const advantageSection = registerAdvantage();
     const teamSection = registerTeam();
 
-    main.append(heroSection, advantageSectiont, teamSection);
+    main.innerHTML = '';
+    main.append(heroSection, advantageSection, teamSection);
+    footer.style.display = '';
 };
