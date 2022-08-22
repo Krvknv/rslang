@@ -57,38 +57,66 @@ export const changePageNumber = (event: Event) => {
     }
 };
 
+// export const makeSound = (...arg: [string, string, string, Event]) => {
+//     const voiceArr = document.querySelectorAll('.card__voice');
+//     let list = arg.slice(0, 3);
+//     const audioElements: HTMLAudioElement[] = [];
+//     if (textbook.audio.length === 0) {
+//         voiceArr.forEach((item) => {
+//             item.classList.remove('on');
+//             item.classList.add('mute');
+//         });
+//         for (let i = 0; i < list.length; i++) {
+//             const audio = new Audio(`http://localhost:3000/${list[i]}`);
+//             textbook.audio.push(audio);
+//             audioElements.push(audio);
+
+//             if (i === 0) {
+//                 // Первое аудио запускаем
+//                 audioElements[i].play();
+//             } else {
+//                 // Остальные — после окончания предыдущего
+//                 audioElements[i - 1].addEventListener('ended', function () {
+//                     audioElements[i].play();
+
+//                     list = list.slice(1);
+//                 });
+//             }
+//         }
+//     } else {
+//         voiceArr.forEach((item) => {
+//             item.classList.remove('mute');
+//             item.classList.add('on');
+//         });
+//         textbook.audio.forEach((item) => item.pause());
+//         textbook.audio = [];
+//     }
+// };
 export const makeSound = (...arg: [string, string, string, Event]) => {
-    const voiceArr = document.querySelectorAll('.card__voice');
     let list = arg.slice(0, 3);
     const audioElements: HTMLAudioElement[] = [];
-    if (textbook.audio.length === 0) {
-        voiceArr.forEach((item) => {
-            item.classList.remove('on');
-            item.classList.add('mute');
-        });
-        for (let i = 0; i < list.length; i++) {
-            const audio = new Audio(`http://localhost:3000/${list[i]}`);
-            textbook.audio.push(audio);
-            audioElements.push(audio);
 
-            if (i === 0) {
-                // Первое аудио запускаем
-                audioElements[i].play();
-            } else {
-                // Остальные — после окончания предыдущего
-                audioElements[i - 1].addEventListener('ended', function () {
-                    audioElements[i].play();
-
-                    list = list.slice(1);
-                });
-            }
+    if (textbook.audio.length > 0) {
+        for (let i = 0; i < 3; i++) {
+            textbook.audio[i].pause();
         }
-    } else {
-        voiceArr.forEach((item) => {
-            item.classList.remove('mute');
-            item.classList.add('on');
-        });
-        textbook.audio.forEach((item) => item.pause());
-        textbook.audio = [];
+        textbook.audio = textbook.audio.slice(3);
+    }
+    for (let i = 0; i < list.length; i++) {
+        const audio = new Audio(`http://localhost:3000/${list[i]}`);
+        textbook.audio.push(audio);
+        audioElements.push(audio);
+
+        if (i === 0) {
+            // Первое аудио запускаем
+            audioElements[i].play();
+        } else {
+            // Остальные — после окончания предыдущего
+            audioElements[i - 1].addEventListener('ended', function () {
+                audioElements[i].play();
+
+                list = list.slice(1);
+            });
+        }
     }
 };
