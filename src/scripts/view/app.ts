@@ -1,6 +1,5 @@
-
 import { showModal } from './modal';
-import { registerHomePage, updateSignInBtn } from '../model/home-page';
+import { updateSignInBtn } from '../model/home-page';
 import { LoggedUser } from '../model/auth';
 import { changePage } from '../model/show-right-page';
 
@@ -18,10 +17,8 @@ export const updateUser = (newName: string, newToken: string): void => {
 
 export const startApp = () => {
     changePage();
-    
     // show correct page
     window.addEventListener('hashchange', changePage);
-
 
     // sign in / sign out
     const user = JSON.parse(localStorage.getItem('user'));
@@ -31,9 +28,9 @@ export const startApp = () => {
         updateUser(user.name, user.token);
         logged = true;
     }
-    
+
     updateSignInBtn(logged);
-  
+
     const btnEnter = document.querySelector('.btn-enter') as HTMLElement;
     btnEnter.addEventListener('click', () => {
         if (btnEnter.dataset.role === 'signin') {
