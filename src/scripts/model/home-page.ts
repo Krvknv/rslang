@@ -146,3 +146,15 @@ export const registerHomePage = () => {
 
     footer.style.display = '';
 };
+
+export const updateSignInBtn = (logged: boolean): void => {
+    const signInBtn = document.querySelector('.btn-enter') as HTMLElement;
+
+    if (logged) {
+        signInBtn.innerText = 'выход';
+        signInBtn.dataset.role = 'signout';
+    } else {
+        signInBtn.innerText = 'вход';
+        signInBtn.dataset.role = 'signin';
+    }
+};
