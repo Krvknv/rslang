@@ -1,4 +1,5 @@
-import { UserCredentials, LoggedUser, AuthResponse } from '../model/auth';
+import { UserCredentials, LoggedUser, SignInResponse, SignUpResponse } from '../model/auth';
+import { updateSignInBtn } from '../model/home-page';
 import { updateUser } from '../view/app';
 import { hideModal } from '../view/modal';
 
@@ -9,7 +10,7 @@ function getUserName(email: string): string {
     return emailArray[0];
 }
 
-async function sendSignIn(user: UserCredentials) {
+async function sendSignIn(user: UserCredentials): Promise<SignInResponse> {
     const rawResponse = await fetch(`${URL}signin`, {
         method: 'POST',
         headers: {
@@ -23,7 +24,7 @@ async function sendSignIn(user: UserCredentials) {
     return content;
 }
 
-async function sendSignUp(user: UserCredentials) {
+async function sendSignUp(user: UserCredentials): Promise<SignUpResponse> {
     user.name = getUserName(user.email);
 
     const rawResponse = await fetch(`${URL}users`, {
@@ -41,7 +42,7 @@ async function sendSignUp(user: UserCredentials) {
 
 export function signIn(user: UserCredentials): void {
     sendSignIn(user).then(
-        (res: AuthResponse) => {
+        (res: SignInResponse) => {
             const newUser: LoggedUser = {
                 name: res.name,
                 token: res.token,
@@ -50,6 +51,7 @@ export function signIn(user: UserCredentials): void {
             localStorage.setItem('user', JSON.stringify(newUser));
             updateUser(newUser.name, newUser.token);
             hideModal();
+            updateSignInBtn(true);
         },
         () => {
             console.log('Wrong user name or password!');
@@ -61,4 +63,8 @@ export function signUp(user: UserCredentials): void {
     sendSignUp(user).then(() => {
         signIn(user);
     });
+}
+
+export function signOut() {
+    return 0;
 }

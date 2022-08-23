@@ -9,7 +9,7 @@ interface LoggedUser {
     token: string;
 }
 
-interface AuthResponse {
+interface SignInResponse {
     message: string;
     token: string;
     refreshToken: string;
@@ -17,4 +17,10 @@ interface AuthResponse {
     name: string;
 }
 
-export { UserCredentials, LoggedUser, AuthResponse };
+interface SignUpResponse {
+    id: string;
+    email: string;
+    name: string;
+}
+
+export { UserCredentials, LoggedUser, SignInResponse, SignUpResponse };
