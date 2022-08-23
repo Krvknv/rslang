@@ -22,9 +22,10 @@ function renderLevelList() {
 }
 
 export function renderGameMenu(gameName: string, gameDescription: string) {
-    const mainContainer = document.querySelector('.main__container');
+    const main = document.querySelector('.main') as HTMLDivElement;
     const footer = document.querySelector('.footer') as HTMLElement;
-    mainContainer.innerHTML = `
+    main.style.backgroundColor = '';
+    main.innerHTML = `
     <div class="game-menu">
         <h1 class="game-menu__title">${gameName}</h1>
         <h3 class="game-menu__description">${gameDescription}</h3>
