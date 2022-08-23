@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 150px;
 }
 
 .levels-list {
@@ -28,17 +29,20 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: $fontMainColor;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        font-weight: 900;
+        width: 120px;
+        height: 120px;
+        border-radius: 100%;
+        border: 2px solid #ffffff;
+        font-size: 32px;
+        line-height: 48px;
+        color: #ffffff;
+        outline: none;
         cursor: pointer;
         transition: .3;
     }
 
     div:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
 }
