@@ -20,8 +20,8 @@ export const startApp = () => {
     changePage();
     // show correct page
     window.addEventListener('hashchange', changePage);
-    
-    //show game modal window
+
+    // show game modal window
     document.addEventListener('click', showOrHideGameModal);
 
     // sign in / sign out
