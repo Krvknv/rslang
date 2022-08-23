@@ -1,3 +1,6 @@
+.main {
+    padding-top: 30px;
+}
 .hero {
     display: flex;
     padding: 81px 0 170px 0;
@@ -24,6 +27,9 @@
     color: $fontMainColor;
     margin-bottom: 100px;
     text-align: center;
+}
+.textbook-title {
+    color: $fontAdditionalColor;
 }
 .advantage__wrapper {
     display: flex;
