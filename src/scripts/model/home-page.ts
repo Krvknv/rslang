@@ -130,13 +130,31 @@ const registerTeam = () => {
 };
 
 export const registerHomePage = () => {
-    const main = document.querySelector('.main__container');
+    const main = document.querySelector('.main') as HTMLElement;
+    const mainContainer = document.createElement('div');
+    mainContainer.classList.add('main__container', 'container');
     const footer = document.querySelector('.footer') as HTMLElement;
     const heroSection = registerHero();
     const advantageSection = registerAdvantage();
     const teamSection = registerTeam();
 
-    main.innerHTML = '';
-    main.append(heroSection, advantageSection, teamSection);
+    main.style.backgroundColor = '#fff';
+
+    mainContainer.append(heroSection, advantageSection, teamSection);
+    main.innerHTML = null;
+    main.append(mainContainer);
+
     footer.style.display = '';
+};
+
+export const updateSignInBtn = (logged: boolean): void => {
+    const signInBtn = document.querySelector('.btn-enter') as HTMLElement;
+
+    if (logged) {
+        signInBtn.innerText = 'выход';
+        signInBtn.dataset.role = 'signout';
+    } else {
+        signInBtn.innerText = 'вход';
+        signInBtn.dataset.role = 'signin';
+    }
 };
