@@ -1,4 +1,5 @@
 import { checkValidity } from '../controller/check-email';
+import { showOrHideGameModal } from '../controller/show-or-hide-game-modal-window';
 import { hideModal, showModal } from '../controller/show-modal';
 import { changePage } from '../model/show-right-page';
 
@@ -23,4 +24,6 @@ export const startApp = () => {
 
     const inputEmail = document.querySelector('.email');
     inputEmail.addEventListener('input', checkValidity);
+
+    document.addEventListener('click', showOrHideGameModal);
 };

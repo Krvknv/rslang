@@ -1,4 +1,5 @@
 import { renderGameMenu, menuContent } from '../view/render-game-menu';
+import { renderGameView } from '../view/render-game-modal-window';
 import { registerHomePage } from './home-page';
 
 export const changePage = () => {
@@ -9,9 +10,11 @@ export const changePage = () => {
             break;
         case 'audiochallenge':
             renderGameMenu(menuContent.gameAudioChallenge, menuContent.gameAudioChallengeDescription);
+            renderGameView(hash);
             break;
         case 'sprint':
             renderGameMenu(menuContent.gameSprint, menuContent.gameSprintDescription);
+            renderGameView(hash);
             break;
         case 'statistics':
             break;
