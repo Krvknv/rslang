@@ -1,6 +1,6 @@
 import { UserCredentials, LoggedUser, SignInResponse, SignUpResponse } from '../model/auth';
 import { updateSignInBtn } from '../model/home-page';
-import { hideModal } from '../view/modal';
+import { hideModal, showModal } from '../view/modal';
 
 const URL = 'http://127.0.0.1:3000/';
 
@@ -8,6 +8,20 @@ export const currentLoggedUser: LoggedUser = {
     name: null,
     token: null,
 };
+
+export function clickEnterBtn(btn: HTMLElement, user: LoggedUser, loggedStatus: boolean) {
+    if (btn.dataset.role === 'signin') {
+        showModal();
+    }
+
+    if (btn.dataset.role === 'signout') {
+        loggedStatus = false;
+        currentLoggedUser.name = null;
+        currentLoggedUser.token = null;
+        updateSignInBtn(loggedStatus);
+        console.log('Logged out');
+    }
+}
 
 export function updateUser(user: LoggedUser, newName: string, newToken: string): void {
     user.name = newName;

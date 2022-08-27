@@ -1,6 +1,5 @@
-import { showModal } from './modal';
 import { updateSignInBtn } from '../model/home-page';
-import { currentLoggedUser, updateUser } from '../controller/auth';
+import { currentLoggedUser, updateUser, clickEnterBtn } from '../controller/auth';
 import { showOrHideGameModal } from '../controller/show-or-hide-game-modal-window';
 import { changePage } from '../model/show-right-page';
 
@@ -24,17 +23,5 @@ export const startApp = () => {
     updateSignInBtn(logged);
 
     const btnEnter = document.querySelector('.btn-enter') as HTMLElement;
-    btnEnter.addEventListener('click', () => {
-        if (btnEnter.dataset.role === 'signin') {
-            showModal();
-        }
-
-        if (btnEnter.dataset.role === 'signout') {
-            logged = false;
-            currentLoggedUser.name = null;
-            currentLoggedUser.token = null;
-            updateSignInBtn(logged);
-            console.log('Logged out');
-        }
-    });
+    btnEnter.addEventListener('click', () => clickEnterBtn(btnEnter, currentLoggedUser, logged));
 };
