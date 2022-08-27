@@ -1,9 +1,20 @@
 import { UserCredentials, LoggedUser, SignInResponse, SignUpResponse } from '../model/auth';
 import { updateSignInBtn } from '../model/home-page';
-import { updateUser } from '../view/app';
 import { hideModal } from '../view/modal';
 
 const URL = 'http://127.0.0.1:3000/';
+
+export const currentLoggedUser: LoggedUser = {
+    name: null,
+    token: null,
+};
+
+export function updateUser(user: LoggedUser, newName: string, newToken: string): void {
+    user.name = newName;
+    user.token = newToken;
+
+    console.log('Current user:', user.name, '\ntoken:', user.token);
+}
 
 function getUserName(email: string): string {
     const emailArray = email.split('@');
@@ -49,7 +60,7 @@ export function signIn(user: UserCredentials): void {
             };
 
             localStorage.setItem('user', JSON.stringify(newUser));
-            updateUser(newUser.name, newUser.token);
+            updateUser(currentLoggedUser, newUser.name, newUser.token);
             hideModal();
             updateSignInBtn(true);
         },
