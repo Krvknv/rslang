@@ -8,6 +8,7 @@
     width: 420px;
     position: relative;
     background-color: #fff;
+    justify-content: space-between;
 
     &__img {
         max-width: 420px;
@@ -16,12 +17,14 @@
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
+        margin-bottom: 20px;
     }
     &__text {
         display: flex;
         flex-direction: column;
         gap: 30px;
-        padding: 0 30px 40px;
+        padding: 0 30px;
+        margin-bottom: 10px;
     }
     &__title {
         display: flex;
@@ -45,6 +48,7 @@
         gap: 10px;
     }
     &__voice {
+        background-image: url('../svg/sound.svg');
         background-position: center center;
         background-repeat: no-repeat;
         width: 39px;
@@ -55,9 +59,44 @@
         cursor: pointer;
     }
 }
-.on {
-    background-image: url('../svg/sound.svg');
+.card__label-hard,
+.card__label-learnt {
+    position: absolute;
+    top: 280px;
+    left: 30px;
+    font-size: 16px;
+    font-weight: 700;
+
+    text-transform: uppercase;
 }
-.mute {
-    background-image: url('../svg/volume-mute.svg');
+.card__label-learnt {
+    // left: 140px;
+    color: $positiveColor;
+}
+
+.card__label-hard {
+    color: $alertColor;
+}
+.card__btns {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 35px;
+}
+.btn-hard-word,
+.btn-learnt-word {
+    padding: 10px;
+    border: 1px solid $mainColor;
+    border-radius: 50px;
+    outline: none;
+    font-size: 16px;
+    text-transform: uppercase;
+    background-color: transparent;
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.marked-word {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset 2px 4px 30px 10px #c181ff;
 }

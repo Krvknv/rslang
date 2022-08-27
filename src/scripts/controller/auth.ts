@@ -1,5 +1,5 @@
-import { UserCredentials, LoggedUser, SignInResponse, SignUpResponse } from '../model/auth';
 import { updateSignInBtn } from '../model/home-page';
+import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
 import { updateUser } from '../view/app';
 import { hideModal } from '../view/modal';
 
@@ -15,7 +15,7 @@ async function sendSignIn(user: UserCredentials): Promise<SignInResponse> {
         method: 'POST',
         headers: {
             // eslint-disable-next-line prettier/prettier
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(user),
@@ -31,7 +31,7 @@ async function sendSignUp(user: UserCredentials): Promise<SignUpResponse> {
         method: 'POST',
         headers: {
             // eslint-disable-next-line prettier/prettier
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(user),
@@ -46,10 +46,11 @@ export function signIn(user: UserCredentials): void {
             const newUser: LoggedUser = {
                 name: res.name,
                 token: res.token,
+                userId: res.userId,
             };
 
             localStorage.setItem('user', JSON.stringify(newUser));
-            updateUser(newUser.name, newUser.token);
+            updateUser(newUser.name, newUser.token, newUser.userId);
             hideModal();
             updateSignInBtn(true);
         },

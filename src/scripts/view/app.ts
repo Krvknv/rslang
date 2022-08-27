@@ -1,35 +1,36 @@
 import { showModal } from './modal';
 import { updateSignInBtn } from '../model/home-page';
-import { LoggedUser } from '../model/auth';
 import { changePage } from '../model/show-right-page';
+import { authorization, loggedUser } from '../model/store';
 
-const loggedUser: LoggedUser = {
-    name: null,
-    token: null,
-};
+// export const loggedUser: LoggedUser = {
+//     name: null,
+//     token: null,
+// };
 
-export const updateUser = (newName: string, newToken: string): void => {
+export const updateUser = (newName: string, newToken: string, userId: string): void => {
     loggedUser.name = newName;
     loggedUser.token = newToken;
+    loggedUser.userId = userId;
 
-    console.log('Current user:', loggedUser.name, '\ntoken:', loggedUser.token);
+    console.log('Current user:', loggedUser.name, '\ntoken:', loggedUser.token, '\nuserId:', loggedUser.userId);
 };
 
-export const startApp = () => {
+export const startApp = async () => {
+    // sign in / sign out
+    // const user = JSON.parse(localStorage.getItem('user'));
+    // let logged = false;
+
+    if (authorization.logged) {
+        updateUser(authorization.user?.name, authorization.user?.token, authorization.user?.userId);
+        authorization.logged = true;
+    }
+
+    updateSignInBtn(authorization.logged);
+
     changePage();
     // show correct page
     window.addEventListener('hashchange', changePage);
-
-    // sign in / sign out
-    const user = JSON.parse(localStorage.getItem('user'));
-    let logged = false;
-
-    if (user) {
-        updateUser(user.name, user.token);
-        logged = true;
-    }
-
-    updateSignInBtn(logged);
 
     const btnEnter = document.querySelector('.btn-enter') as HTMLElement;
     btnEnter.addEventListener('click', () => {
@@ -38,10 +39,10 @@ export const startApp = () => {
         }
 
         if (btnEnter.dataset.role === 'signout') {
-            logged = false;
+            authorization.logged = false;
             loggedUser.name = null;
             loggedUser.token = null;
-            updateSignInBtn(logged);
+            updateSignInBtn(authorization.logged);
             console.log('Logged out');
         }
     });
