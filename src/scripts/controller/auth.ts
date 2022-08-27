@@ -9,17 +9,22 @@ export const currentLoggedUser: LoggedUser = {
     token: null,
 };
 
+function signOut(user: LoggedUser) {
+    localStorage.clear();
+    user.name = null;
+    user.token = null;
+    console.log('Logged out');
+}
+
 export function clickEnterBtn(btn: HTMLElement, user: LoggedUser, loggedStatus: boolean) {
     if (btn.dataset.role === 'signin') {
         showModal();
     }
 
     if (btn.dataset.role === 'signout') {
+        signOut(user);
         loggedStatus = false;
-        currentLoggedUser.name = null;
-        currentLoggedUser.token = null;
         updateSignInBtn(loggedStatus);
-        console.log('Logged out');
     }
 }
 
@@ -88,8 +93,4 @@ export function signUp(user: UserCredentials): void {
     sendSignUp(user).then(() => {
         signIn(user);
     });
-}
-
-export function signOut() {
-    return 0;
 }
