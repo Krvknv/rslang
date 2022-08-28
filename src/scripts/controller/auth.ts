@@ -9,6 +9,10 @@ export const currentLoggedUser: LoggedUser = {
     token: null,
 };
 
+export function getLoggedState(user: null | LoggedUser): boolean {
+    return user !== null;
+}
+
 function signOut(user: LoggedUser) {
     localStorage.clear();
     user.name = null;
@@ -16,15 +20,15 @@ function signOut(user: LoggedUser) {
     console.log('Logged out');
 }
 
-export function clickEnterBtn(btn: HTMLElement, user: LoggedUser, loggedStatus: boolean) {
+export function clickEnterBtn(btn: HTMLElement, user: LoggedUser) {
     if (btn.dataset.role === 'signin') {
         showModal();
     }
 
     if (btn.dataset.role === 'signout') {
         signOut(user);
-        loggedStatus = false;
-        updateSignInBtn(loggedStatus);
+        const loggedState = false;
+        updateSignInBtn(loggedState);
     }
 }
 
