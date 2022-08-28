@@ -85,6 +85,14 @@ const toggleInvalidInput = (event: Event, validity: boolean): void => {
     }
 };
 
+export const showSignInError = (): void => {
+    const inputPassword = document.getElementById('input-password');
+    const errorMessage = document.createElement('div');
+    errorMessage.innerText = 'Неправильный логин или пароль!';
+
+    inputPassword.after(errorMessage);
+};
+
 export const hideModal = (): void => {
     const cover = document.getElementById('cover');
     cover.remove();

@@ -1,6 +1,6 @@
 import { UserCredentials, LoggedUser, SignInResponse, SignUpResponse } from '../model/auth';
 import { updateSignInBtn } from '../model/home-page';
-import { hideModal, showModal } from '../view/modal';
+import { hideModal, showModal, showSignInError } from '../view/modal';
 
 const URL = 'http://127.0.0.1:3000/';
 
@@ -92,7 +92,7 @@ export function signIn(user: UserCredentials): void {
             updateSignInBtn(true);
         },
         () => {
-            console.log('Wrong user name or password!');
+            showSignInError();
         }
     );
 }
