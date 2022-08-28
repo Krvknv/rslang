@@ -16,7 +16,7 @@ export const startApp = () => {
     const loggedState = getLoggedState(user);
 
     if (user) {
-        updateUser(currentLoggedUser, user.name, user.token);
+        updateUser(currentLoggedUser, user.name, user.token, user.id);
     }
 
     updateSignInBtn(loggedState);

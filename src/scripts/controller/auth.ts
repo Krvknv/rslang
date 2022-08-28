@@ -7,6 +7,7 @@ const URL = 'http://127.0.0.1:3000/';
 export const currentLoggedUser: LoggedUser = {
     name: null,
     token: null,
+    id: null,
 };
 
 export function getLoggedState(user: null | LoggedUser): boolean {
@@ -17,6 +18,7 @@ function signOut(user: LoggedUser) {
     localStorage.clear();
     user.name = null;
     user.token = null;
+    user.id = null;
     console.log('Logged out');
 }
 
@@ -32,11 +34,12 @@ export function clickEnterBtn(btn: HTMLElement, user: LoggedUser) {
     }
 }
 
-export function updateUser(user: LoggedUser, newName: string, newToken: string): void {
+export function updateUser(user: LoggedUser, newName: string, newToken: string, newId: string): void {
     user.name = newName;
     user.token = newToken;
+    user.id = newId;
 
-    console.log('Current user:', user.name, '\ntoken:', user.token);
+    console.log('Current user:', user.name, '\ntoken:', user.token, '\nid:', user.id);
 }
 
 function getUserName(email: string): string {
@@ -80,10 +83,11 @@ export function signIn(user: UserCredentials): void {
             const newUser: LoggedUser = {
                 name: res.name,
                 token: res.token,
+                id: res.userId,
             };
 
             localStorage.setItem('user', JSON.stringify(newUser));
-            updateUser(currentLoggedUser, newUser.name, newUser.token);
+            updateUser(currentLoggedUser, newUser.name, newUser.token, newUser.id);
             hideModal();
             updateSignInBtn(true);
         },
