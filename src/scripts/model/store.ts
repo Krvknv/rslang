@@ -1,5 +1,7 @@
 import { LoggedUser, Tauthorization, Ttextbook } from './types';
 
+export const URL = 'http://127.0.0.1:3000/';
+
 export const textbook: Ttextbook = {
     page: +localStorage.getItem('textbookPage') || 1,
     group: +localStorage.getItem('textbookGroup') || 1,
@@ -8,8 +10,8 @@ export const textbook: Ttextbook = {
 };
 
 export const authorization: Tauthorization = {
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    logged: (this as Tauthorization).user === null ? false : true,
+    user: null,
+    logged: false,
 };
 
 export const loggedUser: LoggedUser = {
