@@ -3,6 +3,7 @@ import { updateSignInBtn } from '../model/home-page';
 import { LoggedUser } from '../model/auth';
 import { showOrHideGameModal } from '../controller/show-or-hide-game-modal-window';
 import { changePage } from '../model/show-right-page';
+import { startGame } from '../controller/sprint-event-listeners';
 
 const loggedUser: LoggedUser = {
     name: null,
@@ -23,6 +24,9 @@ export const startApp = () => {
 
     // show game modal window
     document.addEventListener('click', showOrHideGameModal);
+
+    // startSprintGame
+    document.addEventListener('click', startGame);
 
     // sign in / sign out
     const user = JSON.parse(localStorage.getItem('user'));

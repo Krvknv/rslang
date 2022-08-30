@@ -17,8 +17,8 @@ export const gameSprintView = () => {
         <div class="counter-correct-answers__circle"></div>
     </div>
     <div class="sprint-questions">
-        <p>DUCK</p>
-        <p>Утка</p>
+        <p class="sprint-questions__english-word"></p>
+        <p class="sprint-questions__translation"></p>
     </div>
     </div>
     <div class="sprint-buttons">

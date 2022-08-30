@@ -12,7 +12,7 @@ function renderLevelList() {
     ${menuContent.levelColors
         .map(
             (levelColor, index) => `<li class="levels-list__item">
-             <div class="level" style="background-color:${levelColor};">${index + 1}</div>
+             <div class="level" data-word-group="${index}" style="background-color:${levelColor};">${index + 1}</div>
          </li>`
         )
         .join(' ')}
