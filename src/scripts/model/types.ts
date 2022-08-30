@@ -22,6 +22,12 @@ export type Ttextbook = {
     audio: HTMLAudioElement[];
 };
 
+export interface LoggedUser {
+    name: string;
+    token: string;
+    userId: string;
+}
+
 export type Tauthorization = {
     user: LoggedUser | null;
     logged: boolean;
@@ -31,12 +37,6 @@ export interface UserCredentials {
     email: string;
     password: string;
     name?: string;
-}
-
-export interface LoggedUser {
-    name: string;
-    token: string;
-    userId: string;
 }
 
 export interface SignInResponse {
