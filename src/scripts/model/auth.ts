@@ -7,6 +7,7 @@ interface UserCredentials {
 interface LoggedUser {
     name: string;
     token: string;
+    id: string;
 }
 
 interface SignInResponse {

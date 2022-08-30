@@ -1,9 +1,46 @@
 import { UserCredentials, LoggedUser, SignInResponse, SignUpResponse } from '../model/auth';
 import { updateSignInBtn } from '../model/home-page';
-import { updateUser } from '../view/app';
-import { hideModal } from '../view/modal';
+import { hideModal, showModal, showSignInError } from '../view/modal';
 
 const URL = 'http://127.0.0.1:3000/';
+
+export const currentLoggedUser: LoggedUser = {
+    name: null,
+    token: null,
+    id: null,
+};
+
+export function getLoggedState(user: null | LoggedUser): boolean {
+    return user !== null;
+}
+
+function signOut(user: LoggedUser) {
+    localStorage.clear();
+    user.name = null;
+    user.token = null;
+    user.id = null;
+    console.log('Logged out');
+}
+
+export function clickEnterBtn(btn: HTMLElement, user: LoggedUser) {
+    if (btn.dataset.role === 'signin') {
+        showModal();
+    }
+
+    if (btn.dataset.role === 'signout') {
+        signOut(user);
+        const loggedState = false;
+        updateSignInBtn(loggedState);
+    }
+}
+
+export function updateUser(user: LoggedUser, newName: string, newToken: string, newId: string): void {
+    user.name = newName;
+    user.token = newToken;
+    user.id = newId;
+
+    console.log('Current user:', user.name, '\ntoken:', user.token, '\nid:', user.id);
+}
 
 function getUserName(email: string): string {
     const emailArray = email.split('@');
@@ -46,15 +83,16 @@ export function signIn(user: UserCredentials): void {
             const newUser: LoggedUser = {
                 name: res.name,
                 token: res.token,
+                id: res.userId,
             };
 
             localStorage.setItem('user', JSON.stringify(newUser));
-            updateUser(newUser.name, newUser.token);
+            updateUser(currentLoggedUser, newUser.name, newUser.token, newUser.id);
             hideModal();
             updateSignInBtn(true);
         },
         () => {
-            console.log('Wrong user name or password!');
+            showSignInError();
         }
     );
 }
@@ -63,8 +101,4 @@ export function signUp(user: UserCredentials): void {
     sendSignUp(user).then(() => {
         signIn(user);
     });
-}
-
-export function signOut() {
-    return 0;
 }
