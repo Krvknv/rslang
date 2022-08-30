@@ -3,12 +3,12 @@ import { renderGameView } from '../view/render-game-modal-window';
 import { registerHomePage } from './home-page';
 import { showCards } from './textbook-page';
 
-export const changePage = () => {
+export const changePage = async () => {
     const hash = window.location.hash.slice(1);
 
     switch (hash) {
         case 'textbook':
-            showCards();
+            await showCards();
             break;
         case 'audiochallenge':
             renderGameMenu(menuContent.gameAudioChallenge, menuContent.gameAudioChallengeDescription);

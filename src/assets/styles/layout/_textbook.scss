@@ -1,3 +1,15 @@
+.block-title {
+    margin-bottom: 100px;
+    gap: 30px;
+}
+.textbook-title {
+    color: $fontAdditionalColor;
+}
+.textbook-subtitle {
+    color: $fontMainColor;
+    font-size: 48px;
+    display: none;
+}
 .btn-wrapper {
     display: flex;
     gap: 30px;
@@ -14,6 +26,12 @@
     color: #ffffff;
     outline: none;
 }
+// .vocabulary {
+//     background-color: #f7ce34;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// }
 .cards-wrapper {
     display: flex;
     flex-wrap: wrap;
