@@ -1,24 +1,35 @@
 import { updateSignInBtn } from '../model/home-page';
+import { authorization, loggedUser, textbook } from '../model/store';
+import { showCards } from '../model/textbook-page';
 import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
 import { hideModal, showModal, showSignInError } from '../view/modal';
 
 const URL = 'http://127.0.0.1:3000/';
 
-export const currentLoggedUser: LoggedUser = {
-    name: null,
-    token: null,
-    id: null,
-};
-
 export function getLoggedState(user: null | LoggedUser): boolean {
     return user !== null;
 }
 
-function signOut(user: LoggedUser) {
-    localStorage.clear();
+async function signOut(user: LoggedUser) {
+    const hash = window.location.hash.slice(1);
+
+    localStorage.removeItem('user');
     user.name = null;
     user.token = null;
-    user.id = null;
+    user.userId = null;
+
+    authorization.user = null;
+    authorization.logged = false;
+    authorization.loggedState = false;
+    if (textbook.group === 7) {
+        textbook.group = 1;
+        textbook.page = 1;
+        textbook.pageColor = 'rgb(255, 183, 117)';
+    }
+
+    if (hash === 'textbook') {
+        await showCards();
+    }
     console.log('Logged out');
 }
 
@@ -37,9 +48,8 @@ export function clickEnterBtn(btn: HTMLElement, user: LoggedUser) {
 export function updateUser(user: LoggedUser, newName: string, newToken: string, newId: string): void {
     user.name = newName;
     user.token = newToken;
-    user.id = newId;
-
-    console.log('Current user:', user.name, '\ntoken:', user.token, '\nid:', user.id);
+    user.userId = newId;
+    console.log('Current user:', user.name, '\ntoken:', user.token, '\nid:', user.userId);
 }
 
 function getUserName(email: string): string {
@@ -77,19 +87,25 @@ async function sendSignUp(user: UserCredentials): Promise<SignUpResponse> {
     return content;
 }
 
-export function signIn(user: UserCredentials): void {
+export async function signIn(user: UserCredentials) {
     sendSignIn(user).then(
         (res: SignInResponse) => {
+            const hash = window.location.hash.slice(1);
             const newUser: LoggedUser = {
                 name: res.name,
                 token: res.token,
                 userId: res.userId,
             };
-
+            authorization.user = newUser;
+            authorization.logged = true;
+            authorization.loggedState = true;
             localStorage.setItem('user', JSON.stringify(newUser));
-            updateUser(currentLoggedUser, newUser.name, newUser.token, newUser.id);
+            updateUser(loggedUser, newUser.name, newUser.token, newUser.userId);
             hideModal();
             updateSignInBtn(true);
+            if (hash === 'textbook') {
+                showCards();
+            }
         },
         () => {
             showSignInError();

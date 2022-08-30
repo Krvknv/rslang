@@ -15,16 +15,17 @@ export type Tword = {
     wordTranslate: string;
 };
 
-export type Ttextbook = {
+export type TTextbook = {
     page: number;
     group: number;
     pageColor: string;
     audio: HTMLAudioElement[];
 };
 
-export type Tauthorization = {
+export type TAuthorization = {
     user: LoggedUser | null;
     logged: boolean;
+    loggedState: boolean;
 };
 
 export interface UserCredentials {

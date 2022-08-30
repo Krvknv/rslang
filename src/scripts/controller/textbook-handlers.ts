@@ -1,5 +1,5 @@
 import { DeleteHardWord, sendHardWord } from '../model/api/words';
-import { textbook } from '../model/store';
+import { authorization, textbook } from '../model/store';
 import { checkTextbookPage, showVocabulary, updateCards } from '../model/textbook-page';
 
 export const changeGroup = async (event: Event) => {
@@ -28,7 +28,9 @@ export const changeGroup = async (event: Event) => {
             textbook.page = 1;
             number.textContent = `${textbook.page}/30`;
             await updateCards();
-            await checkTextbookPage();
+            if (authorization.user) {
+                await checkTextbookPage();
+            }
         }
     }
 };
@@ -64,7 +66,9 @@ export const changePageNumber = async (event: Event) => {
     if (node.classList.contains('next-btn')) {
         showNextPage();
     }
-    await checkTextbookPage();
+    if (authorization.user) {
+        await checkTextbookPage();
+    }
 };
 
 export const makeSound = (...arg: [string, string, string, Event]) => {
