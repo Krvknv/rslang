@@ -1,4 +1,5 @@
 import { updateSignInBtn } from '../model/home-page';
+import { showStatisticsBtn } from '../model/statistics';
 import { authorization, loggedUser, textbook } from '../model/store';
 import { showCards } from '../model/textbook-page';
 import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
@@ -30,6 +31,7 @@ async function signOut(user: LoggedUser) {
     if (hash === 'textbook') {
         await showCards();
     }
+    showStatisticsBtn();
     console.log('Logged out');
 }
 
@@ -100,12 +102,15 @@ export async function signIn(user: UserCredentials) {
             authorization.logged = true;
             authorization.loggedState = true;
             localStorage.setItem('user', JSON.stringify(newUser));
+
             updateUser(loggedUser, newUser.name, newUser.token, newUser.userId);
             hideModal();
             updateSignInBtn(true);
             if (hash === 'textbook') {
                 showCards();
             }
+
+            showStatisticsBtn();
         },
         () => {
             showSignInError();
