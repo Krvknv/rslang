@@ -1,4 +1,5 @@
 import { DeleteHardWord, sendHardWord } from '../model/api/words';
+import { getDate } from '../model/get-date';
 import { authorization, textbook } from '../model/store';
 import { checkTextbookPage, showVocabulary, updateCards } from '../model/textbook-page';
 
@@ -105,15 +106,16 @@ export const addLearntWord = async (event: Event) => {
     const cardLabel = node.parentNode.previousSibling;
     const cardhardLabel = cardLabel.previousSibling;
     const wordId = (node.parentNode as HTMLElement).dataset.wordid;
+    const date = getDate();
     if (cardhardLabel.textContent && textbook.group === 7) {
         await DeleteHardWord(wordId);
-        await sendHardWord(wordId, { difficulty: 'learnt', optional: {} });
+        await sendHardWord(wordId, { difficulty: 'learnt', optional: { date } });
         await showVocabulary();
         return;
     }
     if (cardhardLabel.textContent) {
         await DeleteHardWord(wordId);
-        await sendHardWord(wordId, { difficulty: 'learnt', optional: {} });
+        await sendHardWord(wordId, { difficulty: 'learnt', optional: { date } });
         cardhardLabel.textContent = '';
         await checkTextbookPage();
         return;
@@ -123,7 +125,7 @@ export const addLearntWord = async (event: Event) => {
         await DeleteHardWord(wordId);
     } else {
         cardLabel.textContent = 'выучено';
-        await sendHardWord(wordId, { difficulty: 'learnt', optional: {} });
+        await sendHardWord(wordId, { difficulty: 'learnt', optional: { date } });
     }
     await checkTextbookPage();
 };

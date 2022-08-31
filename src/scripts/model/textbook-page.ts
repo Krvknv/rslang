@@ -1,14 +1,15 @@
 import { changeGroup, changePageNumber, makeSound, addHardWord, addLearntWord } from '../controller/textbook-handlers';
 import { getMarkedWords, getWord, getWords } from './api/words';
+import { createNode } from './create-node';
 import { authorization, textbook } from './store';
 import { TFullWord, TMarkedWord } from './types';
 
-const createNode = (tag: string, className: string) => {
-    const item = document.createElement(tag);
-    item.classList.add(className);
+// export const createNode = (tag: string, className: string) => {
+//     const item = document.createElement(tag);
+//     item.classList.add(className);
 
-    return item;
-};
+//     return item;
+// };
 
 const createTitle = () => {
     const titleBlock = createNode('div', 'block-title');
@@ -251,6 +252,8 @@ export const showCards = async () => {
     const cardsWrapper = createNode('div', 'cards-wrapper');
     const pagination = createPagination();
 
+    main.style.backgroundColor = localStorage.getItem('textbookPageColor');
+
     main.innerHTML = null;
     main.append(title, buttonsWrapper, cardsWrapper, pagination);
     if (textbook.group === 7 && authorization.user) {
@@ -262,9 +265,10 @@ export const showCards = async () => {
         words = await prepareData();
     } else {
         words = await getWords(textbook.page - 1, textbook.group - 1);
+        if (localStorage.getItem('textbookPageColor') === 'rgb(247, 206, 52)') {
+            main.style.backgroundColor = 'rgb(255, 183, 117)';
+        }
     }
-
-    main.style.backgroundColor = localStorage.getItem('textbookPageColor');
 
     for (const word of words) {
         const card = createCard(word);

@@ -56,7 +56,7 @@ export interface SignUpResponse {
 
 export type TMarkedWord = {
     difficulty: string;
-    optional: object;
+    optional: { [index: string]: string };
     wordId?: string;
 };
 

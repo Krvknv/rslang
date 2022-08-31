@@ -1,5 +1,5 @@
 import { updateSignInBtn } from '../model/home-page';
-import { showStatisticsBtn } from '../model/statistics';
+import { showStatisticsBtn } from '../view/statistics';
 import { authorization, loggedUser, textbook } from '../model/store';
 import { showCards } from '../model/textbook-page';
 import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
