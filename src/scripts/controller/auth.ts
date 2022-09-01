@@ -1,9 +1,10 @@
 import { updateSignInBtn } from '../model/home-page';
 import { showStatisticsBtn } from '../view/statistics';
-import { authorization, loggedUser, textbook, URL } from '../model/store';
+import { authorization, loggedUser, textbook } from '../model/store';
 import { showCards } from '../model/textbook-page';
 import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
 import { hideModal, showModal, showSignInError } from '../view/modal';
+import { COMMON_URL } from '../model/api/constants';
 
 async function signOut(user: LoggedUser) {
     const hash = window.location.hash.slice(1);
@@ -62,7 +63,7 @@ function getUserName(email: string): string {
 }
 
 async function sendSignIn(user: UserCredentials): Promise<SignInResponse> {
-    const rawResponse = await fetch(`${URL}signin`, {
+    const rawResponse = await fetch(`${COMMON_URL}signin`, {
         method: 'POST',
         headers: {
             // eslint-disable-next-line prettier/prettier
@@ -78,7 +79,7 @@ async function sendSignIn(user: UserCredentials): Promise<SignInResponse> {
 async function sendSignUp(user: UserCredentials): Promise<SignUpResponse> {
     user.name = getUserName(user.email);
 
-    const rawResponse = await fetch(`${URL}users`, {
+    const rawResponse = await fetch(`${COMMON_URL}users`, {
         method: 'POST',
         headers: {
             // eslint-disable-next-line prettier/prettier

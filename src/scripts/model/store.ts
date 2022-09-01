@@ -1,7 +1,5 @@
 import { LoggedUser, TAuthorization, TTextbook } from './types';
 
-export const URL = 'http://127.0.0.1:3000/';
-
 export const textbook: TTextbook = {
     page: +localStorage.getItem('textbookPage') || 1,
     group: +localStorage.getItem('textbookGroup') || 1,
