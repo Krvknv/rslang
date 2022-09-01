@@ -1,6 +1,7 @@
 import { renderGameMenu, menuContent } from '../view/render-game-menu';
 import { renderGameView } from '../view/render-game-modal-window';
 import { registerHomePage } from './home-page';
+import { registerStatistics } from '../view/statistics';
 import { showCards } from './textbook-page';
 
 export const changePage = async () => {
@@ -19,6 +20,7 @@ export const changePage = async () => {
             renderGameView(hash);
             break;
         case 'statistics':
+            registerStatistics();
             break;
         default:
             registerHomePage();

@@ -1,5 +1,6 @@
 import { DeleteHardWord, sendHardWord } from '../model/api/words';
-import { textbook } from '../model/store';
+import { getDate } from '../model/get-date';
+import { authorization, textbook } from '../model/store';
 import { checkTextbookPage, showVocabulary, updateCards } from '../model/textbook-page';
 
 export const changeGroup = async (event: Event) => {
@@ -28,7 +29,9 @@ export const changeGroup = async (event: Event) => {
             textbook.page = 1;
             number.textContent = `${textbook.page}/30`;
             await updateCards();
-            await checkTextbookPage();
+            if (authorization.user) {
+                await checkTextbookPage();
+            }
         }
     }
 };
@@ -64,7 +67,9 @@ export const changePageNumber = async (event: Event) => {
     if (node.classList.contains('next-btn')) {
         showNextPage();
     }
-    await checkTextbookPage();
+    if (authorization.user) {
+        await checkTextbookPage();
+    }
 };
 
 export const makeSound = (...arg: [string, string, string, Event]) => {
@@ -101,15 +106,16 @@ export const addLearntWord = async (event: Event) => {
     const cardLabel = node.parentNode.previousSibling;
     const cardhardLabel = cardLabel.previousSibling;
     const wordId = (node.parentNode as HTMLElement).dataset.wordid;
+    const date = getDate();
     if (cardhardLabel.textContent && textbook.group === 7) {
         await DeleteHardWord(wordId);
-        await sendHardWord(wordId, { difficulty: 'learnt', optional: {} });
+        await sendHardWord(wordId, { difficulty: 'learnt', optional: { date } });
         await showVocabulary();
         return;
     }
     if (cardhardLabel.textContent) {
         await DeleteHardWord(wordId);
-        await sendHardWord(wordId, { difficulty: 'learnt', optional: {} });
+        await sendHardWord(wordId, { difficulty: 'learnt', optional: { date } });
         cardhardLabel.textContent = '';
         await checkTextbookPage();
         return;
@@ -119,7 +125,7 @@ export const addLearntWord = async (event: Event) => {
         await DeleteHardWord(wordId);
     } else {
         cardLabel.textContent = 'выучено';
-        await sendHardWord(wordId, { difficulty: 'learnt', optional: {} });
+        await sendHardWord(wordId, { difficulty: 'learnt', optional: { date } });
     }
     await checkTextbookPage();
 };

@@ -1,17 +1,34 @@
 import { updateSignInBtn } from '../model/home-page';
+import { showStatisticsBtn } from '../view/statistics';
+import { authorization, loggedUser, textbook, URL } from '../model/store';
+import { showCards } from '../model/textbook-page';
 import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
 import { hideModal, showModal, showSignInError } from '../view/modal';
-import { loggedUser, URL } from '../model/store';
 
 export function getLoggedState(user: null | LoggedUser): boolean {
     return user !== null;
 }
 
-function signOut(user: LoggedUser) {
-    localStorage.clear();
+async function signOut(user: LoggedUser) {
+    const hash = window.location.hash.slice(1);
+
+    localStorage.removeItem('user');
     user.name = null;
     user.token = null;
     user.userId = null;
+
+    authorization.user = null;
+    authorization.logged = false;
+    if (textbook.group === 7) {
+        textbook.group = 1;
+        textbook.page = 1;
+        textbook.pageColor = 'rgb(255, 183, 117)';
+    }
+
+    if (hash === 'textbook') {
+        await showCards();
+    }
+    showStatisticsBtn();
     console.log('Logged out');
 }
 
@@ -70,19 +87,27 @@ async function sendSignUp(user: UserCredentials): Promise<SignUpResponse> {
     return content;
 }
 
-export function signIn(user: UserCredentials): void {
+export async function signIn(user: UserCredentials) {
     sendSignIn(user).then(
         (res: SignInResponse) => {
+            const hash = window.location.hash.slice(1);
             const newUser: LoggedUser = {
                 name: res.name,
                 token: res.token,
                 userId: res.userId,
             };
-
+            authorization.user = newUser;
+            authorization.logged = true;
             localStorage.setItem('user', JSON.stringify(newUser));
+
             updateUser(loggedUser, newUser.name, newUser.token, newUser.userId);
             hideModal();
             updateSignInBtn(true);
+            if (hash === 'textbook') {
+                showCards();
+            }
+
+            showStatisticsBtn();
         },
         () => {
             showSignInError();

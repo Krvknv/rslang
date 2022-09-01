@@ -8,7 +8,7 @@
     width: 420px;
     position: relative;
     background-color: #fff;
-    justify-content: space-between;
+    padding-bottom: 35px;
 
     &__img {
         max-width: 420px;
@@ -17,7 +17,7 @@
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
-        margin-bottom: 20px;
+        margin-bottom: 50px;
     }
     &__text {
         display: flex;
@@ -62,7 +62,7 @@
 .card__label-hard,
 .card__label-learnt {
     position: absolute;
-    top: 280px;
+    top: 290px;
     left: 30px;
     font-size: 16px;
     font-weight: 700;
@@ -70,7 +70,6 @@
     text-transform: uppercase;
 }
 .card__label-learnt {
-    // left: 140px;
     color: $positiveColor;
 }
 
@@ -81,7 +80,6 @@
     display: flex;
     justify-content: center;
     gap: 10px;
-    padding-bottom: 35px;
 }
 .btn-hard-word,
 .btn-learnt-word {

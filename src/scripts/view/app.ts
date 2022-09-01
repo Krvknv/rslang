@@ -7,13 +7,9 @@ import { authorization, loggedUser } from '../model/store';
 export const startApp = () => {
     // show game modal window
     document.addEventListener('click', showOrHideGameModal);
-
     // sign in / sign out
-    authorization.user = JSON.parse(localStorage.getItem('user'));
-    authorization.logged = getLoggedState(authorization.user);
-
     if (authorization.user) {
-        updateUser(loggedUser, authorization.user.name, authorization.user.token, authorization.user.userId);
+        updateUser(loggedUser, authorization.user?.name, authorization.user?.token, authorization.user?.userId);
     }
 
     updateSignInBtn(authorization.logged);

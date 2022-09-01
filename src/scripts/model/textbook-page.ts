@@ -1,14 +1,15 @@
 import { changeGroup, changePageNumber, makeSound, addHardWord, addLearntWord } from '../controller/textbook-handlers';
 import { getMarkedWords, getWord, getWords } from './api/words';
+import { createNode } from './create-node';
 import { authorization, textbook } from './store';
 import { TFullWord, TMarkedWord } from './types';
 
-const createNode = (tag: string, className: string) => {
-    const item = document.createElement(tag);
-    item.classList.add(className);
+// export const createNode = (tag: string, className: string) => {
+//     const item = document.createElement(tag);
+//     item.classList.add(className);
 
-    return item;
-};
+//     return item;
+// };
 
 const createTitle = () => {
     const titleBlock = createNode('div', 'block-title');
@@ -45,7 +46,7 @@ const createBlockBtns = () => {
         const button = createGroupBtn(colors[i - 1], i);
         buttonsWrapper.append(button);
     }
-    if (authorization.logged) {
+    if (authorization.user) {
         const buttonVocabulary = createGroupBtn('#f7ce34', 7);
         buttonsWrapper.append(buttonVocabulary);
     }
@@ -145,7 +146,7 @@ export const createCard = (data: TFullWord, difficulty?: string) => {
 
     card.append(image, cardText, voice, hardLabel, learntLabel);
 
-    if (authorization.logged) {
+    if (authorization.user) {
         const cardBtns = createCardBtns();
         cardBtns.setAttribute('data-wordId', data.id);
         card.append(cardBtns);
@@ -174,7 +175,7 @@ export const updateCards = async () => {
     const cardWrapper = document.querySelector('.cards-wrapper');
 
     let words;
-    if (authorization.logged) {
+    if (authorization.user) {
         words = await prepareData();
     } else {
         words = await getWords(textbook.page - 1, textbook.group - 1);
@@ -231,7 +232,7 @@ export async function showVocabulary() {
     const cardsWrapper = document.querySelector('.cards-wrapper');
     const pagination = document.querySelector('.pagination') as HTMLElement;
     const main = document.querySelector('.main') as HTMLElement;
-    if (!authorization.logged) {
+    if (!authorization.user) {
         title.textContent = 'Страница доступна только для авторизованных пользователей';
         cardsWrapper.innerHTML = null;
     }
@@ -251,28 +252,30 @@ export const showCards = async () => {
     const cardsWrapper = createNode('div', 'cards-wrapper');
     const pagination = createPagination();
 
+    main.style.backgroundColor = localStorage.getItem('textbookPageColor');
+
     main.innerHTML = null;
     main.append(title, buttonsWrapper, cardsWrapper, pagination);
-    if (textbook.group === 7) {
+    if (textbook.group === 7 && authorization.user) {
         await showVocabulary();
         return;
     }
     let words;
-    if (authorization.logged) {
+    if (authorization.user) {
         words = await prepareData();
     } else {
         words = await getWords(textbook.page - 1, textbook.group - 1);
+        if (localStorage.getItem('textbookPageColor') === 'rgb(247, 206, 52)') {
+            main.style.backgroundColor = 'rgb(255, 183, 117)';
+        }
     }
-
-    // const words = await getWords(textbook.page - 1, textbook.group - 1);
-    main.style.backgroundColor = textbook.pageColor;
 
     for (const word of words) {
         const card = createCard(word);
         cardsWrapper.append(card);
     }
 
-    if (authorization.logged) {
+    if (authorization.user) {
         await checkTextbookPage();
     }
 };

@@ -15,7 +15,7 @@ export type Tword = {
     wordTranslate: string;
 };
 
-export type Ttextbook = {
+export type TTextbook = {
     page: number;
     group: number;
     pageColor: string;
@@ -28,7 +28,7 @@ export interface LoggedUser {
     userId: string;
 }
 
-export type Tauthorization = {
+export type TAuthorization = {
     user: LoggedUser | null;
     logged: boolean;
 };
@@ -55,7 +55,7 @@ export interface SignUpResponse {
 
 export type TMarkedWord = {
     difficulty: string;
-    optional: object;
+    optional: { [index: string]: string };
     wordId?: string;
 };
 
