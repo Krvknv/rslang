@@ -27,6 +27,11 @@ async function signOut(user: LoggedUser) {
     if (hash === 'textbook') {
         await showCards();
     }
+    if (hash === 'statistics') {
+        const oldLocation = window.location.origin;
+        window.location.href = `${oldLocation}/#home`;
+        console.log(oldLocation);
+    }
     showStatisticsBtn();
     console.log('Logged out');
 }
