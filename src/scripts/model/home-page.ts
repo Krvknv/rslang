@@ -149,7 +149,6 @@ export const registerHomePage = () => {
 
 export const updateSignInBtn = (logged: boolean): void => {
     const signInBtn = document.querySelector('.btn-enter') as HTMLElement;
-
     if (logged) {
         signInBtn.innerText = 'выход';
         signInBtn.dataset.role = 'signout';

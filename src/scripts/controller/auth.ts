@@ -1,32 +1,37 @@
 import { updateSignInBtn } from '../model/home-page';
 import { showStatisticsBtn } from '../view/statistics';
-import { authorization, loggedUser, textbook, URL } from '../model/store';
+import { authorization, loggedUser, textbook } from '../model/store';
 import { showCards } from '../model/textbook-page';
 import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
 import { hideModal, showModal, showSignInError } from '../view/modal';
-
-export function getLoggedState(user: null | LoggedUser): boolean {
-    return user !== null;
-}
+import { COMMON_URL } from '../model/api/constants';
 
 async function signOut(user: LoggedUser) {
     const hash = window.location.hash.slice(1);
 
     localStorage.removeItem('user');
+
     user.name = null;
     user.token = null;
     user.userId = null;
 
     authorization.user = null;
-    authorization.logged = false;
+
     if (textbook.group === 7) {
         textbook.group = 1;
         textbook.page = 1;
-        textbook.pageColor = 'rgb(255, 183, 117)';
+        localStorage.setItem('textbookPage', '1');
+        localStorage.setItem('textbookGroup', '1');
+        localStorage.setItem('textbookPageColor', 'rgb(255, 183, 117)');
     }
 
     if (hash === 'textbook') {
         await showCards();
+    }
+    if (hash === 'statistics') {
+        const oldLocation = window.location.origin;
+        window.location.href = `${oldLocation}/#home`;
+        console.log(oldLocation);
     }
     showStatisticsBtn();
     console.log('Logged out');
@@ -58,7 +63,7 @@ function getUserName(email: string): string {
 }
 
 async function sendSignIn(user: UserCredentials): Promise<SignInResponse> {
-    const rawResponse = await fetch(`${URL}signin`, {
+    const rawResponse = await fetch(`${COMMON_URL}signin`, {
         method: 'POST',
         headers: {
             // eslint-disable-next-line prettier/prettier
@@ -74,7 +79,7 @@ async function sendSignIn(user: UserCredentials): Promise<SignInResponse> {
 async function sendSignUp(user: UserCredentials): Promise<SignUpResponse> {
     user.name = getUserName(user.email);
 
-    const rawResponse = await fetch(`${URL}users`, {
+    const rawResponse = await fetch(`${COMMON_URL}users`, {
         method: 'POST',
         headers: {
             // eslint-disable-next-line prettier/prettier
@@ -96,8 +101,9 @@ export async function signIn(user: UserCredentials) {
                 token: res.token,
                 userId: res.userId,
             };
+
             authorization.user = newUser;
-            authorization.logged = true;
+
             localStorage.setItem('user', JSON.stringify(newUser));
 
             updateUser(loggedUser, newUser.name, newUser.token, newUser.userId);

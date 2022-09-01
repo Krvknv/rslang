@@ -1,22 +1,23 @@
 import { updateSignInBtn } from '../model/home-page';
-import { updateUser, clickEnterBtn, getLoggedState } from '../controller/auth';
+import { updateUser, clickEnterBtn } from '../controller/auth';
 import { showOrHideGameModal } from '../controller/show-or-hide-game-modal-window';
 import { changePage } from '../model/show-right-page';
 import { authorization, loggedUser } from '../model/store';
+import { showStatisticsBtn } from './statistics';
 
 export const startApp = () => {
     // show game modal window
     document.addEventListener('click', showOrHideGameModal);
     // sign in / sign out
-    if (authorization.user) {
+    if (authorization.getLogged()) {
         updateUser(loggedUser, authorization.user?.name, authorization.user?.token, authorization.user?.userId);
     }
 
-    updateSignInBtn(authorization.logged);
+    updateSignInBtn(authorization.getLogged());
 
     // show correct page
     changePage();
-
+    showStatisticsBtn();
     window.addEventListener('hashchange', changePage);
 
     const btnEnter = document.querySelector('.btn-enter') as HTMLElement;

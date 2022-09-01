@@ -44,7 +44,7 @@ const getAmountLearntWordsToday = async () => {
 
 export const showStatisticsBtn = () => {
     const statisticsBtn = document.querySelector('#statistics') as HTMLElement;
-    if (authorization.user) {
+    if (authorization.getLogged()) {
         statisticsBtn.style.display = 'list-item';
     } else {
         statisticsBtn.style.display = 'none';
