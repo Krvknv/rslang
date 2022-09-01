@@ -5,10 +5,6 @@ import { showCards } from '../model/textbook-page';
 import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
 import { hideModal, showModal, showSignInError } from '../view/modal';
 
-export function getLoggedState(user: null | LoggedUser): boolean {
-    return user !== null;
-}
-
 async function signOut(user: LoggedUser) {
     const hash = window.location.hash.slice(1);
 
@@ -19,7 +15,6 @@ async function signOut(user: LoggedUser) {
     user.userId = null;
 
     authorization.user = null;
-    authorization.logged = false;
 
     if (textbook.group === 7) {
         textbook.group = 1;
@@ -102,7 +97,6 @@ export async function signIn(user: UserCredentials) {
             };
 
             authorization.user = newUser;
-            authorization.logged = true;
 
             localStorage.setItem('user', JSON.stringify(newUser));
 

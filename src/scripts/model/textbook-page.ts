@@ -39,7 +39,7 @@ const createBlockBtns = () => {
         const button = createGroupBtn(colors[i - 1], i);
         buttonsWrapper.append(button);
     }
-    if (authorization.user) {
+    if (authorization.getLogged()) {
         const buttonVocabulary = createGroupBtn('#f7ce34', 7);
         buttonsWrapper.append(buttonVocabulary);
     }
@@ -139,7 +139,7 @@ export const createCard = (data: TFullWord, difficulty?: string) => {
 
     card.append(image, cardText, voice, hardLabel, learntLabel);
 
-    if (authorization.user) {
+    if (authorization.getLogged()) {
         const cardBtns = createCardBtns();
         cardBtns.setAttribute('data-wordId', data.id);
         card.append(cardBtns);
@@ -168,7 +168,7 @@ export const updateCards = async () => {
     const cardWrapper = document.querySelector('.cards-wrapper');
 
     let words;
-    if (authorization.user) {
+    if (authorization.getLogged()) {
         words = await prepareData();
     } else {
         words = await getWords(textbook.page - 1, textbook.group - 1);
@@ -225,7 +225,7 @@ export async function showVocabulary() {
     const cardsWrapper = document.querySelector('.cards-wrapper');
     const pagination = document.querySelector('.pagination') as HTMLElement;
     const main = document.querySelector('.main') as HTMLElement;
-    if (!authorization.user) {
+    if (!authorization.getLogged()) {
         title.textContent = 'Страница доступна только для авторизованных пользователей';
         cardsWrapper.innerHTML = null;
     }
@@ -249,18 +249,15 @@ export const showCards = async () => {
 
     main.innerHTML = null;
     main.append(title, buttonsWrapper, cardsWrapper, pagination);
-    if (textbook.group === 7 && authorization.user) {
+    if (textbook.group === 7 && authorization.getLogged()) {
         await showVocabulary();
         return;
     }
     let words;
-    if (authorization.user) {
+    if (authorization.getLogged()) {
         words = await prepareData();
     } else {
         words = await getWords(textbook.page - 1, textbook.group - 1);
-        // if (localStorage.getItem('textbookPageColor') === 'rgb(247, 206, 52)') {
-        //     main.style.backgroundColor = 'rgb(255, 183, 117)';
-        // }
     }
 
     for (const word of words) {
@@ -268,7 +265,7 @@ export const showCards = async () => {
         cardsWrapper.append(card);
     }
 
-    if (authorization.user) {
+    if (authorization.getLogged()) {
         await checkTextbookPage();
     }
 };

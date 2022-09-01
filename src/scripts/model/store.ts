@@ -11,7 +11,13 @@ export const textbook: TTextbook = {
 
 export const authorization: TAuthorization = {
     user: JSON.parse(localStorage.getItem('user')) || null,
-    logged: (this as TAuthorization).user === null ? false : true,
+    getLogged() {
+        if (this.user === null) {
+            return false;
+        } else {
+            return true;
+        }
+    },
 };
 
 export const loggedUser: LoggedUser = {

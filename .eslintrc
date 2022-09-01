@@ -32,6 +32,7 @@
         "consistent-return": 0,
         "no-return-assign": 0,
         "no-loop-func": 0,
-        "no-unneeded-ternary": 0
+        "no-unneeded-ternary": 0,
+        "no-else-return": 0
     }
 }

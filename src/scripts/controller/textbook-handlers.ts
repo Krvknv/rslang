@@ -29,7 +29,7 @@ export const changeGroup = async (event: Event) => {
             textbook.page = 1;
             number.textContent = `${textbook.page}/30`;
             await updateCards();
-            if (authorization.user) {
+            if (authorization.getLogged()) {
                 await checkTextbookPage();
             }
         }
@@ -67,7 +67,7 @@ export const changePageNumber = async (event: Event) => {
     if (node.classList.contains('next-btn')) {
         showNextPage();
     }
-    if (authorization.user) {
+    if (authorization.getLogged()) {
         await checkTextbookPage();
     }
 };

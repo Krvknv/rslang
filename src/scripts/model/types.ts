@@ -30,7 +30,7 @@ export interface LoggedUser {
 
 export type TAuthorization = {
     user: LoggedUser | null;
-    logged: boolean;
+    getLogged: () => boolean;
 };
 
 export interface UserCredentials {
