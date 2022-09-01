@@ -158,3 +158,11 @@ export const updateSignInBtn = (logged: boolean): void => {
         signInBtn.dataset.role = 'signin';
     }
 };
+// export const checkEnterBtn = () => {
+//     const enterBtn = document.querySelector('btn-enter');
+//     if (authorization.user) {
+//     enterBtn.textContent = 'выход';
+//     } else {
+//     enterBtn.textContent = 'вход';
+//     }
+//     };

@@ -13,16 +13,20 @@ async function signOut(user: LoggedUser) {
     const hash = window.location.hash.slice(1);
 
     localStorage.removeItem('user');
+
     user.name = null;
     user.token = null;
     user.userId = null;
 
     authorization.user = null;
     authorization.logged = false;
+
     if (textbook.group === 7) {
         textbook.group = 1;
         textbook.page = 1;
-        textbook.pageColor = 'rgb(255, 183, 117)';
+        localStorage.setItem('textbookPage', '1');
+        localStorage.setItem('textbookGroup', '1');
+        localStorage.setItem('textbookPageColor', 'rgb(255, 183, 117)');
     }
 
     if (hash === 'textbook') {
@@ -96,8 +100,10 @@ export async function signIn(user: UserCredentials) {
                 token: res.token,
                 userId: res.userId,
             };
+
             authorization.user = newUser;
             authorization.logged = true;
+
             localStorage.setItem('user', JSON.stringify(newUser));
 
             updateUser(loggedUser, newUser.name, newUser.token, newUser.userId);

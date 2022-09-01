@@ -4,13 +4,6 @@ import { createNode } from './create-node';
 import { authorization, textbook } from './store';
 import { TFullWord, TMarkedWord } from './types';
 
-// export const createNode = (tag: string, className: string) => {
-//     const item = document.createElement(tag);
-//     item.classList.add(className);
-
-//     return item;
-// };
-
 const createTitle = () => {
     const titleBlock = createNode('div', 'block-title');
 
@@ -265,9 +258,9 @@ export const showCards = async () => {
         words = await prepareData();
     } else {
         words = await getWords(textbook.page - 1, textbook.group - 1);
-        if (localStorage.getItem('textbookPageColor') === 'rgb(247, 206, 52)') {
-            main.style.backgroundColor = 'rgb(255, 183, 117)';
-        }
+        // if (localStorage.getItem('textbookPageColor') === 'rgb(247, 206, 52)') {
+        //     main.style.backgroundColor = 'rgb(255, 183, 117)';
+        // }
     }
 
     for (const word of words) {
