@@ -49,11 +49,35 @@
     margin-bottom: 0;
   }
 
+  #sprint-audio-btn {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    top: 2%;
+    left: 3vw;
+    cursor: pointer;
+  }
+
+  #sprint-audio-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .cup__wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    height: 125px;
+
+    .cup {
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+
   .score-and-timer__wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
   }
 
   .sprint-score {
@@ -89,17 +113,23 @@
   .sprint-questions {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    width: 395px;
-    height: 200px;
+    width: 400px;
+    height: 250px;
+    padding: 20px 0 20px;
     background-color: $mainColor;
     color: #ffffff;
     border-radius: 20px;
 
     p {
-      font-size: 30px;
+      font-size: 40px;
       font-weight: 700;
+    }
+
+    #points-counter {
+      font-size: 20px;
+      font-weight: 500;
     }
   }
 }
@@ -109,10 +139,13 @@
   gap: 5px;
 
   .counter-correct-answers__circle {
-    width: 12px;
-    height: 12px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    border: 1px solid $mainColor
+    background-size: cover;
+    background-image: url('../png/check-mark.png');
+    visibility: hidden;
+    opacity: 0;
   }
 }
 

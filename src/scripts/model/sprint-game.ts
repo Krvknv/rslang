@@ -5,8 +5,13 @@ const makeCounter = () => {
     let privateCounter = 0;
 
     return {
-        addOne() {
-            privateCounter += 1;
+        incrementBy(value: number) {
+            privateCounter += value;
+        },
+        decrementBy(value: number) {
+            if (privateCounter > 0) {
+                privateCounter -= value;
+            }
         },
         resetValue() {
             privateCounter = 0;
@@ -17,7 +22,24 @@ const makeCounter = () => {
     };
 };
 
-export const wordIndexCounter = makeCounter();
+const showGameElement = (elementIndex: number, elementListName: NodeListOf<HTMLElement>) => {
+    elementListName[elementIndex].style.visibility = 'visible';
+    elementListName[elementIndex].style.opacity = '1';
+};
+
+const hideGameElement = (elementListName: NodeListOf<HTMLElement>) => {
+    elementListName.forEach((cup) => {
+        cup.style.visibility = 'hidden';
+        cup.style.opacity = '0';
+    });
+};
+
+// --------------counters--------------
+const wordIndexCounter = makeCounter();
+const correctAnswersSeries = makeCounter();
+const cupCounter = makeCounter();
+const sprintScore = makeCounter();
+//-------------------------------------
 
 export const sprintGameTimer = () => {
     const timer = document.getElementById('timer-counter') as HTMLDivElement;
@@ -88,15 +110,191 @@ export function generateGroupOfWords() {
         }
     });
 
-    return wordsForGame;
+    localStorage.setItem('wordsForSprintGame', JSON.stringify(wordsForGame));
 }
 
-export function insertWordsForGame() {
+function setDataAttributeForButtons(trueAnswer: string, falseAnswer: string) {
+    const buttonTrueAnswer = document.getElementById('sprint-true-btn');
+    const buttonFalseAnswer = document.getElementById('sprint-false-btn');
+    buttonTrueAnswer.dataset.answer = `${trueAnswer}`;
+    buttonFalseAnswer.dataset.answer = `${falseAnswer}`;
+}
+
+function insertWordsForGame(englishWord: string, translateWord: string) {
     const placeForEnglishWord = document.querySelector('.sprint-questions__english-word') as HTMLParagraphElement;
     const placeForTranslateWord = document.querySelector('.sprint-questions__translation') as HTMLParagraphElement;
-    const words = generateGroupOfWords();
+    placeForEnglishWord.innerHTML = `${englishWord}`;
+    placeForTranslateWord.innerHTML = `${translateWord}`;
+}
+
+export function displayWords() {
+    const words = JSON.parse(localStorage.getItem('wordsForSprintGame'));
     const wordIndex = wordIndexCounter.getValue();
-    placeForEnglishWord.innerHTML = `${words[wordIndex][1]}`;
-    placeForTranslateWord.innerHTML = words[wordIndex][getRandomNumber(2, 3)];
-    wordIndexCounter.addOne();
+    const englishWord = words[wordIndex][1];
+    const randomTranslateWord = words[wordIndex][getRandomNumber(2, 3)];
+    const trueTranslate = words[wordIndex][2];
+    const falseTranslate = words[wordIndex][3];
+    console.log(englishWord, trueTranslate);
+    insertWordsForGame(englishWord, randomTranslateWord);
+    setDataAttributeForButtons(trueTranslate, falseTranslate);
+    wordIndexCounter.incrementBy(1);
+}
+
+function multiplyPoints(numberOfCups: number) {
+    const points = 10;
+    const coefficients = [1, 2, 4, 8];
+
+    switch (numberOfCups) {
+        case 1:
+            return points * coefficients[1];
+        case 2:
+            return points * coefficients[2];
+        case 3:
+            return points * coefficients[3];
+        default:
+            return points * coefficients[0];
+    }
+}
+
+function makeFlag() {
+    let flag = true;
+
+    return {
+        on() {
+            flag = true;
+        },
+
+        off() {
+            flag = false;
+        },
+
+        getStatus() {
+            return flag;
+        },
+    };
+}
+
+export const soundFlag = makeFlag();
+
+export const changeAudioButtonStyle = (action: string) => {
+    const audioButton = document.getElementById('sprint-audio-btn');
+    audioButton.innerHTML = `<img id="sprint-audio-btn" src="./assets/png/volume-${action}.png" width="25px">`;
+};
+
+export function playSound(answer: string) {
+    const answerSound = new Audio(`../assets/audio/${answer}_answer.mp3`);
+    const flag = soundFlag.getStatus();
+
+    switch (flag) {
+        case true:
+            answerSound.volume = 1;
+            answerSound.play();
+            break;
+        default:
+            answerSound.volume = 0;
+    }
+}
+
+export function changeAudioStatus() {
+    const flag = soundFlag.getStatus();
+    switch (flag) {
+        case true:
+            changeAudioButtonStyle('off');
+            soundFlag.off();
+            break;
+        default:
+            changeAudioButtonStyle('on');
+            soundFlag.on();
+    }
+}
+
+function changeStyleAndScoreByAnswer(seriesOfCorrectAnswers: number) {
+    const checkCircles = document.querySelectorAll('.counter-correct-answers__circle') as NodeListOf<HTMLDivElement>;
+    const gameScore = document.getElementById('score-counter') as HTMLDivElement;
+    const cups = document.querySelectorAll('.cup') as NodeListOf<HTMLDivElement>;
+    const placeForPoints = document.getElementById('points-counter');
+    let cupIndex = cupCounter.getValue();
+    let pointsByTrueAnswer = multiplyPoints(cupIndex);
+
+    if (seriesOfCorrectAnswers === 0) {
+        hideGameElement(cups);
+        hideGameElement(checkCircles);
+        cupCounter.resetValue();
+        cupIndex = cupCounter.getValue();
+        pointsByTrueAnswer = multiplyPoints(cupIndex);
+        placeForPoints.innerHTML = `+${pointsByTrueAnswer} очков за слово`;
+        return;
+    }
+
+    if (seriesOfCorrectAnswers % 4 === 0 && seriesOfCorrectAnswers < 16) {
+        if (cupIndex < 3) {
+            showGameElement(cupIndex, cups);
+        }
+
+        hideGameElement(checkCircles);
+        cupCounter.incrementBy(1);
+        cupIndex = cupCounter.getValue();
+        pointsByTrueAnswer = multiplyPoints(cupIndex);
+        placeForPoints.innerHTML = `+${pointsByTrueAnswer} очков за слово`;
+        sprintScore.incrementBy(pointsByTrueAnswer);
+        gameScore.innerHTML = `${sprintScore.getValue()}`;
+
+        return;
+    }
+
+    for (let i = 0; i < seriesOfCorrectAnswers % 4; i++) {
+        showGameElement(i, checkCircles);
+    }
+    sprintScore.incrementBy(pointsByTrueAnswer);
+    placeForPoints.innerHTML = `+${pointsByTrueAnswer} очков за слово`;
+    gameScore.innerHTML = `${sprintScore.getValue()}`;
+}
+
+export function checkTrueAnswer(answerButton: HTMLElement) {
+    const placeForTranslateWord = document.querySelector('.sprint-questions__translation') as HTMLParagraphElement;
+    if (answerButton.dataset.answer === placeForTranslateWord.innerHTML) {
+        playSound('true');
+        correctAnswersSeries.incrementBy(1);
+    } else {
+        playSound('false');
+        correctAnswersSeries.resetValue();
+    }
+    changeStyleAndScoreByAnswer(correctAnswersSeries.getValue());
+
+    console.log(correctAnswersSeries.getValue());
+}
+
+const resetCounters = () => {
+    const counters = [wordIndexCounter, sprintScore, cupCounter, correctAnswersSeries];
+    counters.forEach((counter) => counter.resetValue());
+};
+
+const resetBlockContent = () => {
+    const [timer, placeForEnglishWord, placeForTranslateWord, gameScore, placeForPoints] = [
+        document.getElementById('timer-counter'),
+        document.querySelector('.sprint-questions__english-word'),
+        document.querySelector('.sprint-questions__translation'),
+        document.getElementById('score-counter'),
+        document.getElementById('points-counter'),
+    ];
+
+    const blocks = [timer, placeForEnglishWord, placeForTranslateWord, gameScore, placeForPoints];
+    const blockContent = ['', '', '60', '0', '+10 очков за слово'];
+
+    blocks.forEach((block, i) => (block.innerHTML = blockContent[i]));
+};
+
+const hideGameElements = () => {
+    const cups = document.querySelectorAll('.cup') as NodeListOf<HTMLDivElement>;
+    const checkCircles = document.querySelectorAll('.counter-correct-answers__circle') as NodeListOf<HTMLDivElement>;
+
+    const gameElements = [cups, checkCircles];
+    gameElements.forEach((gameElement) => hideGameElement(gameElement));
+};
+
+export function resetSprintGameData() {
+    resetCounters();
+    resetBlockContent();
+    hideGameElements();
+    soundFlag.on();
 }
