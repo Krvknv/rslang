@@ -85,6 +85,22 @@ const toggleInvalidInput = (event: Event, validity: boolean): void => {
     }
 };
 
+export const showSignInError = (): void => {
+    const inputPassword = document.getElementById('input-password');
+    const errorMessage = document.createElement('div');
+    errorMessage.innerText = 'Неправильный логин или пароль!';
+    errorMessage.id = 'sign-in-error-msg';
+
+    inputPassword.after(errorMessage);
+};
+
+const removeSignInError = (): void => {
+    const errorMessage = document.getElementById('sign-in-error-msg');
+    if (errorMessage) {
+        errorMessage.remove();
+    }
+};
+
 export const hideModal = (): void => {
     const cover = document.getElementById('cover');
     cover.remove();
@@ -118,11 +134,13 @@ export const showModal = () => {
     toggleDisableBtn(emailValidity, passwordValidity);
 
     inputEmail.addEventListener('input', (event: Event) => {
+        removeSignInError();
         emailValidity = checkEmailValidity(event);
         toggleDisableBtn(emailValidity, passwordValidity);
         toggleInvalidInput(event, emailValidity);
     });
     inputPassword.addEventListener('input', (event: Event) => {
+        removeSignInError();
         passwordValidity = checkPasswordValidity(event);
         toggleDisableBtn(emailValidity, passwordValidity);
         toggleInvalidInput(event, passwordValidity);

@@ -1,27 +1,12 @@
-import { showModal } from './modal';
 import { updateSignInBtn } from '../model/home-page';
-import { LoggedUser } from '../model/auth';
+import { updateUser, clickEnterBtn } from '../controller/auth';
 import { showOrHideGameModal } from '../controller/show-or-hide-game-modal-window';
 import { changePage } from '../model/show-right-page';
 import { acceptAnswersOnKeyboard, startGame } from '../controller/sprint-event-listeners';
-
-const loggedUser: LoggedUser = {
-    name: null,
-    token: null,
-};
-
-export const updateUser = (newName: string, newToken: string): void => {
-    loggedUser.name = newName;
-    loggedUser.token = newToken;
-
-    console.log('Current user:', loggedUser.name, '\ntoken:', loggedUser.token);
-};
+import { authorization, loggedUser } from '../model/store';
+import { showStatisticsBtn } from './statistics';
 
 export const startApp = () => {
-    changePage();
-    // show correct page
-    window.addEventListener('hashchange', changePage);
-
     // show game modal window
     document.addEventListener('click', showOrHideGameModal);
 
@@ -30,28 +15,17 @@ export const startApp = () => {
     document.addEventListener('keydown', acceptAnswersOnKeyboard);
 
     // sign in / sign out
-    const user = JSON.parse(localStorage.getItem('user'));
-    let logged = false;
-
-    if (user) {
-        updateUser(user.name, user.token);
-        logged = true;
+    if (authorization.getLogged()) {
+        updateUser(loggedUser, authorization.user?.name, authorization.user?.token, authorization.user?.userId);
     }
 
-    updateSignInBtn(logged);
+    updateSignInBtn(authorization.getLogged());
+
+    // show correct page
+    changePage();
+    showStatisticsBtn();
+    window.addEventListener('hashchange', changePage);
 
     const btnEnter = document.querySelector('.btn-enter') as HTMLElement;
-    btnEnter.addEventListener('click', () => {
-        if (btnEnter.dataset.role === 'signin') {
-            showModal();
-        }
-
-        if (btnEnter.dataset.role === 'signout') {
-            logged = false;
-            loggedUser.name = null;
-            loggedUser.token = null;
-            updateSignInBtn(logged);
-            console.log('Logged out');
-        }
-    });
+    btnEnter.addEventListener('click', () => clickEnterBtn(btnEnter, loggedUser));
 };

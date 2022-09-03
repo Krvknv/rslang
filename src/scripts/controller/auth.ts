@@ -1,9 +1,61 @@
-import { UserCredentials, LoggedUser, SignInResponse, SignUpResponse } from '../model/auth';
 import { updateSignInBtn } from '../model/home-page';
-import { updateUser } from '../view/app';
-import { hideModal } from '../view/modal';
+import { showStatisticsBtn } from '../view/statistics';
+import { authorization, loggedUser, textbook } from '../model/store';
+import { showCards } from '../model/textbook-page';
+import { LoggedUser, SignInResponse, SignUpResponse, UserCredentials } from '../model/types';
+import { hideModal, showModal, showSignInError } from '../view/modal';
+import { COMMON_URL } from '../model/api/constants';
 
-const URL = 'http://127.0.0.1:3000/';
+async function signOut(user: LoggedUser) {
+    const hash = window.location.hash.slice(1);
+
+    localStorage.removeItem('user');
+
+    user.name = null;
+    user.token = null;
+    user.userId = null;
+
+    authorization.user = null;
+
+    if (textbook.group === 7) {
+        textbook.group = 1;
+        textbook.page = 1;
+        localStorage.setItem('textbookPage', '1');
+        localStorage.setItem('textbookGroup', '1');
+        localStorage.setItem('textbookPageColor', 'rgb(255, 183, 117)');
+    }
+
+    if (hash === 'textbook') {
+        await showCards();
+    }
+    if (hash === 'statistics') {
+        const oldLocation = window.location.origin;
+        window.location.href = `${oldLocation}/#home`;
+        console.log(oldLocation);
+    }
+    showStatisticsBtn();
+    console.log('Logged out');
+}
+
+export function clickEnterBtn(btn: HTMLElement, user: LoggedUser) {
+    if (btn.dataset.role === 'signin') {
+        showModal();
+    }
+
+    if (btn.dataset.role === 'signout') {
+        signOut(user);
+        const loggedState = false;
+        updateSignInBtn(loggedState);
+    }
+}
+
+export function updateUser(user: LoggedUser, newName: string, newToken: string, newId: string): void {
+    user.name = newName;
+    user.token = newToken;
+    user.userId = newId;
+
+    console.log('Current user:', user.name, '\ntoken:', user.token, '\nid:', user.userId);
+}
 
 function getUserName(email: string): string {
     const emailArray = email.split('@');
@@ -11,11 +63,11 @@ function getUserName(email: string): string {
 }
 
 async function sendSignIn(user: UserCredentials): Promise<SignInResponse> {
-    const rawResponse = await fetch(`${URL}signin`, {
+    const rawResponse = await fetch(`${COMMON_URL}signin`, {
         method: 'POST',
         headers: {
             // eslint-disable-next-line prettier/prettier
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(user),
@@ -27,11 +79,11 @@ async function sendSignIn(user: UserCredentials): Promise<SignInResponse> {
 async function sendSignUp(user: UserCredentials): Promise<SignUpResponse> {
     user.name = getUserName(user.email);
 
-    const rawResponse = await fetch(`${URL}users`, {
+    const rawResponse = await fetch(`${COMMON_URL}users`, {
         method: 'POST',
         headers: {
             // eslint-disable-next-line prettier/prettier
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(user),
@@ -40,21 +92,31 @@ async function sendSignUp(user: UserCredentials): Promise<SignUpResponse> {
     return content;
 }
 
-export function signIn(user: UserCredentials): void {
+export async function signIn(user: UserCredentials) {
     sendSignIn(user).then(
         (res: SignInResponse) => {
+            const hash = window.location.hash.slice(1);
             const newUser: LoggedUser = {
                 name: res.name,
                 token: res.token,
+                userId: res.userId,
             };
 
+            authorization.user = newUser;
+
             localStorage.setItem('user', JSON.stringify(newUser));
-            updateUser(newUser.name, newUser.token);
+
+            updateUser(loggedUser, newUser.name, newUser.token, newUser.userId);
             hideModal();
             updateSignInBtn(true);
+            if (hash === 'textbook') {
+                showCards();
+            }
+
+            showStatisticsBtn();
         },
         () => {
-            console.log('Wrong user name or password!');
+            showSignInError();
         }
     );
 }
@@ -63,8 +125,4 @@ export function signUp(user: UserCredentials): void {
     sendSignUp(user).then(() => {
         signIn(user);
     });
-}
-
-export function signOut() {
-    return 0;
 }
