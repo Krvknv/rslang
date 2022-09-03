@@ -2,12 +2,18 @@ import { updateSignInBtn } from '../model/home-page';
 import { updateUser, clickEnterBtn } from '../controller/auth';
 import { showOrHideGameModal } from '../controller/show-or-hide-game-modal-window';
 import { changePage } from '../model/show-right-page';
+import { acceptAnswersOnKeyboard, startGame } from '../controller/sprint-event-listeners';
 import { authorization, loggedUser } from '../model/store';
 import { showStatisticsBtn } from './statistics';
 
 export const startApp = () => {
     // show game modal window
     document.addEventListener('click', showOrHideGameModal);
+
+    // startSprintGame
+    document.addEventListener('click', startGame);
+    document.addEventListener('keydown', acceptAnswersOnKeyboard);
+
     // sign in / sign out
     if (authorization.getLogged()) {
         updateUser(loggedUser, authorization.user?.name, authorization.user?.token, authorization.user?.userId);
