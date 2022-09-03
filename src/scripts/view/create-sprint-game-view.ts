@@ -12,6 +12,15 @@ export function renderCup(cupColor: string, cupHeight: number) {
     return cup;
 }
 
+function renderResultModal() {
+    const resultModalWindow = `
+    <div class="result-modal__window">
+        <button class="game-view__close-btn"></button>
+    </div>`;
+
+    return resultModalWindow;
+}
+
 export const gameSprintView = () => {
     const cups = {
         colors: ['#b08d57', '#C0C0C0', '#e6a80e'],
@@ -56,6 +65,9 @@ export const gameSprintView = () => {
         <button class="sprint-buttons__answer" id="sprint-true-btn">
         Верно
         </button>
+    </div>
+    <div class="result-modal">
+        ${renderResultModal()}
     </div>`;
 
     return sprintView;

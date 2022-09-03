@@ -1,6 +1,9 @@
+import { renderSprintGameResult } from '../view/render-sprint-game-result';
 import { getWords } from './api/get-words';
+import { changeResultModalVisibility } from './game-modal-visibility';
 import { Tword } from './types';
 
+// --------------counters--------------
 const makeCounter = () => {
     let privateCounter = 0;
 
@@ -13,14 +16,88 @@ const makeCounter = () => {
                 privateCounter -= value;
             }
         },
-        resetValue() {
+        reset() {
             privateCounter = 0;
         },
-        getValue() {
+        get() {
             return privateCounter;
         },
     };
 };
+
+const wordIndexCounter = makeCounter();
+const correctAnswersSeries = makeCounter();
+const cupCounter = makeCounter();
+const sprintScore = makeCounter();
+
+// ---------------storages for words--------------
+function makeStorageForWords() {
+    const data: Tword[] = [];
+
+    return {
+        addData(value: Tword) {
+            data.push(value);
+        },
+
+        reset() {
+            data.length = 0;
+        },
+
+        get() {
+            return data;
+        },
+    };
+}
+
+export const storageForCorrectAnswers = makeStorageForWords();
+export const storageForWrongAnswers = makeStorageForWords();
+
+// -------------flags-------------------
+function makeFlag() {
+    let flag = true;
+
+    return {
+        on() {
+            flag = true;
+        },
+
+        off() {
+            flag = false;
+        },
+
+        getStatus() {
+            return flag;
+        },
+    };
+}
+
+export const soundFlag = makeFlag();
+
+// ------------storages for numbers------------
+function makeStorageForNumbers() {
+    const numbers: number[] = [];
+
+    return {
+        add(series: number) {
+            numbers.push(series);
+        },
+        reset() {
+            numbers.length = 0;
+        },
+        get() {
+            return numbers;
+        },
+    };
+}
+
+const storageForBestSeries = makeStorageForNumbers();
+
+export function findDataOfWord(word: string) {
+    const words = JSON.parse(localStorage.getItem('words'));
+    const foundDataOfWord = words.find((dataOfWord: Tword) => dataOfWord.word === word);
+
+    return foundDataOfWord;
+}
 
 const showGameElement = (elementIndex: number, elementListName: NodeListOf<HTMLElement>) => {
     elementListName[elementIndex].style.visibility = 'visible';
@@ -34,12 +111,23 @@ const hideGameElement = (elementListName: NodeListOf<HTMLElement>) => {
     });
 };
 
-// --------------counters--------------
-const wordIndexCounter = makeCounter();
-const correctAnswersSeries = makeCounter();
-const cupCounter = makeCounter();
-const sprintScore = makeCounter();
-//-------------------------------------
+export function generateResultOfGameSprint() {
+    const wrongAnswers = storageForWrongAnswers.get();
+    const correctAnswers = storageForCorrectAnswers.get();
+    const bestSeries = storageForBestSeries.get().sort((prevNum, nextNum) => nextNum - prevNum);
+    const gameScore = sprintScore.get();
+    const result = {
+        gameName: 'Sprint',
+        numberOfCorrectAnswers: correctAnswers.length,
+        numberOfWrongAnswers: wrongAnswers.length,
+        bestSeriesOfCorrectAnswer: bestSeries[0],
+        score: gameScore,
+        // date: ,
+        // numberOfNewWords: ,
+    };
+
+    return result;
+}
 
 export const sprintGameTimer = () => {
     const timer = document.getElementById('timer-counter') as HTMLDivElement;
@@ -48,6 +136,11 @@ export const sprintGameTimer = () => {
     const timerId = setInterval(() => {
         if (timeIsOver >= timeLeft) {
             clearInterval(timerId);
+            storageForBestSeries.add(correctAnswersSeries.get());
+            // console.log(generateResultOfGameSprint());
+            generateResultOfGameSprint();
+            renderSprintGameResult();
+            changeResultModalVisibility('1', 'visible');
         }
         timer.innerHTML = `${timeLeft}`;
         timeLeft -= 1;
@@ -67,10 +160,12 @@ const getPagesForGame = () => {
     switch (currentPage) {
         case 0:
             prevPage = lastPage;
+            nextPage = currentPage + 1;
             break;
 
         case 29:
             nextPage = firstPage;
+            prevPage = currentPage - 1;
             break;
 
         default:
@@ -129,12 +224,17 @@ function insertWordsForGame(englishWord: string, translateWord: string) {
 
 export function displayWords() {
     const words = JSON.parse(localStorage.getItem('wordsForSprintGame'));
-    const wordIndex = wordIndexCounter.getValue();
+    const wordIndex = wordIndexCounter.get();
+
+    if (wordIndex === 59) {
+        wordIndexCounter.reset();
+    }
+
     const englishWord = words[wordIndex][1];
     const randomTranslateWord = words[wordIndex][getRandomNumber(2, 3)];
     const trueTranslate = words[wordIndex][2];
     const falseTranslate = words[wordIndex][3];
-    console.log(englishWord, trueTranslate);
+    // console.log(englishWord, trueTranslate);
     insertWordsForGame(englishWord, randomTranslateWord);
     setDataAttributeForButtons(trueTranslate, falseTranslate);
     wordIndexCounter.incrementBy(1);
@@ -155,26 +255,6 @@ function multiplyPoints(numberOfCups: number) {
             return points * coefficients[0];
     }
 }
-
-function makeFlag() {
-    let flag = true;
-
-    return {
-        on() {
-            flag = true;
-        },
-
-        off() {
-            flag = false;
-        },
-
-        getStatus() {
-            return flag;
-        },
-    };
-}
-
-export const soundFlag = makeFlag();
 
 export const changeAudioButtonStyle = (action: string) => {
     const audioButton = document.getElementById('sprint-audio-btn');
@@ -213,14 +293,14 @@ function changeStyleAndScoreByAnswer(seriesOfCorrectAnswers: number) {
     const gameScore = document.getElementById('score-counter') as HTMLDivElement;
     const cups = document.querySelectorAll('.cup') as NodeListOf<HTMLDivElement>;
     const placeForPoints = document.getElementById('points-counter');
-    let cupIndex = cupCounter.getValue();
+    let cupIndex = cupCounter.get();
     let pointsByTrueAnswer = multiplyPoints(cupIndex);
 
     if (seriesOfCorrectAnswers === 0) {
         hideGameElement(cups);
         hideGameElement(checkCircles);
-        cupCounter.resetValue();
-        cupIndex = cupCounter.getValue();
+        cupCounter.reset();
+        cupIndex = cupCounter.get();
         pointsByTrueAnswer = multiplyPoints(cupIndex);
         placeForPoints.innerHTML = `+${pointsByTrueAnswer} очков за слово`;
         return;
@@ -233,11 +313,11 @@ function changeStyleAndScoreByAnswer(seriesOfCorrectAnswers: number) {
 
         hideGameElement(checkCircles);
         cupCounter.incrementBy(1);
-        cupIndex = cupCounter.getValue();
+        cupIndex = cupCounter.get();
         pointsByTrueAnswer = multiplyPoints(cupIndex);
         placeForPoints.innerHTML = `+${pointsByTrueAnswer} очков за слово`;
         sprintScore.incrementBy(pointsByTrueAnswer);
-        gameScore.innerHTML = `${sprintScore.getValue()}`;
+        gameScore.innerHTML = `${sprintScore.get()}`;
 
         return;
     }
@@ -247,26 +327,35 @@ function changeStyleAndScoreByAnswer(seriesOfCorrectAnswers: number) {
     }
     sprintScore.incrementBy(pointsByTrueAnswer);
     placeForPoints.innerHTML = `+${pointsByTrueAnswer} очков за слово`;
-    gameScore.innerHTML = `${sprintScore.getValue()}`;
+    gameScore.innerHTML = `${sprintScore.get()}`;
 }
 
-export function checkTrueAnswer(answerButton: HTMLElement) {
+export function checkAnswer(answerButton: HTMLElement) {
     const placeForTranslateWord = document.querySelector('.sprint-questions__translation') as HTMLParagraphElement;
+    const word = document.querySelector('.sprint-questions__english-word').innerHTML;
+
     if (answerButton.dataset.answer === placeForTranslateWord.innerHTML) {
         playSound('true');
         correctAnswersSeries.incrementBy(1);
+        storageForCorrectAnswers.addData(findDataOfWord(word));
     } else {
         playSound('false');
-        correctAnswersSeries.resetValue();
+        storageForBestSeries.add(correctAnswersSeries.get());
+        correctAnswersSeries.reset();
+        storageForWrongAnswers.addData(findDataOfWord(word));
     }
-    changeStyleAndScoreByAnswer(correctAnswersSeries.getValue());
-
-    console.log(correctAnswersSeries.getValue());
+    changeStyleAndScoreByAnswer(correctAnswersSeries.get());
 }
 
 const resetCounters = () => {
     const counters = [wordIndexCounter, sprintScore, cupCounter, correctAnswersSeries];
-    counters.forEach((counter) => counter.resetValue());
+    counters.forEach((counter) => counter.reset());
+};
+
+const resetStorages = () => {
+    const storages = [storageForCorrectAnswers, storageForWrongAnswers, storageForBestSeries];
+
+    storages.forEach((storage) => storage.reset());
 };
 
 const resetBlockContent = () => {
@@ -295,6 +384,7 @@ const hideGameElements = () => {
 export function resetSprintGameData() {
     resetCounters();
     resetBlockContent();
+    resetStorages();
     hideGameElements();
     soundFlag.on();
 }
