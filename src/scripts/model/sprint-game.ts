@@ -1,5 +1,5 @@
 import { renderSprintGameResult } from '../view/render-sprint-game-result';
-import { getWords } from './api/get-words';
+import { getWords } from './api/words';
 import { changeResultModalVisibility } from './game-modal-visibility';
 import { Tword } from './types';
 
