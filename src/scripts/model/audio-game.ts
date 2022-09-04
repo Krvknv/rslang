@@ -131,21 +131,41 @@ export function nextRound() {
     }
 }
 
+function highlighRightAnswer() {
+    const answerBtns = document.querySelectorAll('.audiochallenge-answer__option');
+    answerBtns.forEach((btn) => {
+        if (btn.innerHTML.toLowerCase() === game.words[game.wordIndex].word) {
+            btn.classList.add('audiochallenge-answer__option_right');
+        }
+    });
+}
+
+function resetAnswersHighlight() {
+    const answerBtns = document.querySelectorAll('.audiochallenge-answer__option');
+    answerBtns.forEach((btn) => {
+        btn.classList.remove('audiochallenge-answer__option_right');
+    });
+}
+
 export function checkAnswer(btn: Element) {
     const result = btn.innerHTML === game.words[game.wordIndex].word;
     if (result) {
-        console.log('Right!');
+        // console.log('Right!');
         game.rightAnswers++;
         game.updateStreak();
     } else {
-        console.log('Wrong!');
+        // console.log('Wrong!');
         game.streak = 0;
     }
-    console.log(game.streak, game.longestStreak);
+    // console.log(game.streak, game.longestStreak);
     const word = game.words[game.wordIndex].word as string;
 
     game.updateStats(word, result);
-    nextRound();
+    highlighRightAnswer();
+    setTimeout(() => {
+        nextRound();
+        resetAnswersHighlight();
+    }, 500);
 }
 
 export function skipAnswer() {

@@ -339,6 +339,11 @@
     border-radius: 50px;
     background-color: $mainColor;
     cursor: pointer;
+
+    &_right {
+        background-color: $buttonTrueColor;
+        color: black;
+    }
   }
 
   .audiochallenge-answer__option:hover {
