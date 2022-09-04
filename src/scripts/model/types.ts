@@ -59,6 +59,17 @@ export type TMarkedWord = {
     wordId?: string;
 };
 
+export type TUserWord = {
+    difficulty: string;
+    id?: string;
+    optional: {
+        count: number;
+        correctAnswer: number;
+        wrongAnswer: number;
+    };
+    wordId?: string;
+};
+
 export type TFullWord = {
     id: string;
     group: number;

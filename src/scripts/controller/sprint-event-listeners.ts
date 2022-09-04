@@ -15,7 +15,6 @@ export async function startGame(event: MouseEvent) {
 
     if (hash === 'sprint') {
         const eventTarget = event.target as HTMLElement;
-        // const event
 
         if (eventTarget.classList.contains('level')) {
             const wordGroupNumber = eventTarget.dataset.wordGroup;
