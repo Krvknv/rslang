@@ -1,7 +1,7 @@
-import { getWords } from '../model/api/words';
-import { Tword } from '../model/types';
-import { COMMON_URL } from '../model/api/constants';
-import { changeResultModalVisibility } from '../model/game-modal-visibility';
+import { getWords } from './api/words';
+import { Tword } from './types';
+import { COMMON_URL } from './api/constants';
+import { changeResultModalVisibility } from './game-modal-visibility';
 
 class AudioGame {
     words: Array<Tword>;

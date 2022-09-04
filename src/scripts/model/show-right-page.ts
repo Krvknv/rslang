@@ -3,7 +3,7 @@ import { renderGameView } from '../view/render-game-modal-window';
 import { registerHomePage } from './home-page';
 import { registerStatistics, showStatisticsBtn } from '../view/statistics';
 import { showCards } from './textbook-page';
-import { addLevelListeners, nextRound, checkAnswer } from '../controller/audio-game';
+import { addLevelListeners, nextRound, checkAnswer } from './audio-game';
 
 function addAnswersLinsteners() {
     const answerBtns = document.querySelectorAll('.audiochallenge-answer__option');
