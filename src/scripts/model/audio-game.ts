@@ -1,6 +1,7 @@
 import { Tword } from './types';
 import { COMMON_URL } from './api/constants';
 import { changeResultModalVisibility } from './game-modal-visibility';
+import { getDate } from './get-date';
 
 class AudioGame {
     words: Array<Tword>;
@@ -58,6 +59,26 @@ class AudioGame {
             word,
             result,
         });
+    }
+
+    getRightAnswersCount() {
+        return this.stats.filter((stat) => stat.result).length;
+    }
+
+    getWrongAnswersCount() {
+        return this.stats.filter((stat) => !stat.result).length;
+    }
+
+    generateResults() {
+        return {
+            gameName: 'Audiochallenge',
+            numberOfCorrectAnswers: this.getRightAnswersCount(),
+            numberOfWrongAnswers: this.getWrongAnswersCount(),
+            bestSeriesOfCorrectAnswer: this.longestStreak,
+            score: 0,
+            date: getDate(),
+            // numberOfNewWords: ,
+        };
     }
 }
 
@@ -128,6 +149,8 @@ export function nextRound() {
         updateGameView(game.words[game.wordIndex]);
     } else {
         renderAudioGameResults();
+        const gameResults = game.generateResults(); // TODO sending result to db
+        console.log(gameResults);
     }
 }
 
