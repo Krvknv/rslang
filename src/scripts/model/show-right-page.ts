@@ -26,8 +26,8 @@ export const changePage = async () => {
             break;
         case 'audiochallenge':
             renderGameMenu(menuContent.gameAudioChallenge, menuContent.gameAudioChallengeDescription);
-            addLevelListeners();
             renderGameView(hash);
+            addLevelListeners();
             addAnswersLinsteners();
             addSkipListener();
             break;

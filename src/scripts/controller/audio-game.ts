@@ -1,9 +1,7 @@
 import { getWords } from '../model/api/words';
 import { Tword } from '../model/types';
 import { COMMON_URL } from '../model/api/constants';
-// import { loggedUser } from '../model/store';
-
-// const date = new Date(); // TODO change to getDate() function
+import { changeResultModalVisibility } from '../model/game-modal-visibility';
 
 class AudioGame {
     words: Array<Tword>;
@@ -67,21 +65,6 @@ class AudioGame {
 let wordsArray: Array<Tword> = [];
 let game: AudioGame;
 
-// async function sendStats() {
-//     const stats = {
-//         game: 'audiochallenge',
-//         newWords: 0, // TODO get new words
-//         rightAnswers: game.rightAnswers,
-//         longestStreak: game.longestStreak,
-//         date: date.toString(),
-//     };
-//     const url = `${URL}/users/${loggedUser.userId}/statistics`;
-
-//     fetch(url, {
-
-//     })
-// }
-
 function randomizeWords(words: Array<Tword>): Array<Tword> {
     return words.sort(() => Math.random() - 0.5);
 }
@@ -94,6 +77,12 @@ function cacheAudio(words: Array<Tword>) {
 }
 
 function updateGameView(word: Tword): void {
+    const resultModalWindow = document.querySelector('.result-modal__window') as HTMLDivElement;
+    resultModalWindow.innerHTML = '';
+
+    const gameWrapper = document.querySelector('.audiochallenge__wrapper') as HTMLElement;
+    gameWrapper.style.display = 'flex';
+
     const audioIcon = document.querySelector('.audiochallenge__icon');
     const audioElement = document.getElementById('audiochallenge__audio') as HTMLAudioElement;
     audioElement.src = `${COMMON_URL}${word.audio}`;
@@ -108,13 +97,13 @@ function updateGameView(word: Tword): void {
     });
 }
 
-// TODO separate modal window for results
+function renderAudioGameResults() {
+    changeResultModalVisibility('1', 'visible');
+    const resultModalWindow = document.querySelector('.result-modal__window') as HTMLDivElement;
+    const gameWrapper = document.querySelector('.audiochallenge__wrapper') as HTMLElement;
+    gameWrapper.style.display = 'none';
 
-function showResults() {
-    const gameView = document.querySelector('.audiochallenge');
-    gameView.innerHTML = `
-    <button class="game-view__close-btn"></button>
-    <h1 class="game-view__title">Аудиовызов</h1>
+    resultModalWindow.innerHTML = `
     <div>Результаты игры:</div>
     <table id="game-view__results-list">
     </table>
@@ -139,7 +128,7 @@ export function nextRound() {
         game.wordIndex++;
         updateGameView(game.words[game.wordIndex]);
     } else {
-        showResults();
+        renderAudioGameResults();
     }
 }
 
