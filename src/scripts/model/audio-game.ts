@@ -148,6 +148,13 @@ export function checkAnswer(btn: Element) {
     nextRound();
 }
 
+export function skipAnswer() {
+    game.streak = 0;
+    const word = game.words[game.wordIndex].word as string;
+    game.updateStats(word, false);
+    nextRound();
+}
+
 export function startAudioGame(words: Array<Tword>): void {
     wordsArray = randomizeWords(words);
     game = new AudioGame(wordsArray);

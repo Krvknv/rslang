@@ -1,4 +1,4 @@
-import { checkAnswer, nextRound, startAudioGame } from '../model/audio-game';
+import { checkAnswer, skipAnswer, startAudioGame } from '../model/audio-game';
 import { getWords } from '../model/api/words';
 
 function addLevelListeners(): void {
@@ -23,7 +23,7 @@ function addAnswersLinsteners(): void {
 
 function addSkipListener(): void {
     const skipBtn = document.getElementById('audiochallenge-skip-btn');
-    skipBtn.addEventListener('click', () => nextRound());
+    skipBtn.addEventListener('click', () => skipAnswer());
 }
 
 export function addAudioGameListeners(): void {
