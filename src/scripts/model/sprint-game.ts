@@ -1,10 +1,12 @@
 import { renderSprintGameResult } from '../view/render-sprint-game-result';
 import { getWords } from './api/words';
 import { changeResultModalVisibility } from './game-modal-visibility';
+import { createOrUpdateWordsForUser } from './sprint-save-user-words';
+import { getDate } from './get-date';
 import { Tword } from './types';
 
 // --------------counters--------------
-const makeCounter = () => {
+export const makeCounter = () => {
     let privateCounter = 0;
 
     return {
@@ -29,6 +31,7 @@ const wordIndexCounter = makeCounter();
 const correctAnswersSeries = makeCounter();
 const cupCounter = makeCounter();
 const sprintScore = makeCounter();
+export const newWordsCounter = makeCounter();
 
 // ---------------storages for words--------------
 function makeStorageForWords() {
@@ -112,20 +115,22 @@ const hideGameElement = (elementListName: NodeListOf<HTMLElement>) => {
 };
 
 export function generateResultOfGameSprint() {
-    const wrongAnswers = storageForWrongAnswers.get();
-    const correctAnswers = storageForCorrectAnswers.get();
+    const amountWrongAnswers = storageForWrongAnswers.get().length;
+    const amountCorrectAnswers = storageForCorrectAnswers.get().length;
     const bestSeries = storageForBestSeries.get().sort((prevNum, nextNum) => nextNum - prevNum);
     const gameScore = sprintScore.get();
+    const currentDate = getDate();
     const result = {
         gameName: 'Sprint',
-        numberOfCorrectAnswers: correctAnswers.length,
-        numberOfWrongAnswers: wrongAnswers.length,
+        numberOfCorrectAnswers: amountCorrectAnswers,
+        numberOfWrongAnswers: amountWrongAnswers,
         bestSeriesOfCorrectAnswer: bestSeries[0],
         score: gameScore,
-        // date: ,
-        // numberOfNewWords: ,
+        date: currentDate,
+        numberOfNewWords: newWordsCounter.get(),
     };
 
+    localStorage.setItem('SprintGameResult', JSON.stringify(result));
     return result;
 }
 
@@ -137,7 +142,6 @@ export const sprintGameTimer = () => {
         if (timeIsOver >= timeLeft) {
             clearInterval(timerId);
             storageForBestSeries.add(correctAnswersSeries.get());
-            // console.log(generateResultOfGameSprint());
             generateResultOfGameSprint();
             renderSprintGameResult();
             changeResultModalVisibility('1', 'visible');
@@ -194,16 +198,18 @@ export function generateGroupOfWords() {
     const words = JSON.parse(localStorage.getItem('words') as string);
     const wordsForGame = words.map((el: Tword) => [el.id, el.word, el.wordTranslate]);
     const translateWords = words.map((el: Tword) => el.wordTranslate);
-    wordsForGame.forEach((el: Tword, i: number) => {
+
+    for (let i = 0; i < wordsForGame.length; ) {
         const { length } = translateWords;
         const randomNumber = getRandomNumber(0, length - 1);
         const randomTranslateWord = translateWords[randomNumber];
 
-        if (el.wordTranslate !== randomTranslateWord) {
+        if (wordsForGame[i].wordTranslate !== randomTranslateWord) {
             wordsForGame[i].push(randomTranslateWord);
             translateWords.splice(randomNumber, 1);
+            i++;
         }
-    });
+    }
 
     localStorage.setItem('wordsForSprintGame', JSON.stringify(wordsForGame));
 }
@@ -226,8 +232,11 @@ export function displayWords() {
     const words = JSON.parse(localStorage.getItem('wordsForSprintGame'));
     const wordIndex = wordIndexCounter.get();
 
-    if (wordIndex === 59) {
-        wordIndexCounter.reset();
+    if (wordIndex === words.length) {
+        storageForBestSeries.add(correctAnswersSeries.get());
+        generateResultOfGameSprint();
+        renderSprintGameResult();
+        changeResultModalVisibility('1', 'visible');
     }
 
     const englishWord = words[wordIndex][1];
@@ -330,25 +339,39 @@ function changeStyleAndScoreByAnswer(seriesOfCorrectAnswers: number) {
     gameScore.innerHTML = `${sprintScore.get()}`;
 }
 
-export function checkAnswer(answerButton: HTMLElement) {
-    const placeForTranslateWord = document.querySelector('.sprint-questions__translation') as HTMLParagraphElement;
-    const word = document.querySelector('.sprint-questions__english-word').innerHTML;
+function takeActionOnCorrectAnswer(word: Tword) {
+    playSound('true');
+    correctAnswersSeries.incrementBy(1);
+    storageForCorrectAnswers.addData(word);
+    createOrUpdateWordsForUser(word, 'true');
+}
 
-    if (answerButton.dataset.answer === placeForTranslateWord.innerHTML) {
-        playSound('true');
-        correctAnswersSeries.incrementBy(1);
-        storageForCorrectAnswers.addData(findDataOfWord(word));
+function takeActionOnWrongAnswer(word: Tword) {
+    playSound('false');
+    storageForBestSeries.add(correctAnswersSeries.get());
+    correctAnswersSeries.reset();
+    storageForWrongAnswers.addData(word);
+    createOrUpdateWordsForUser(word, 'false');
+}
+
+export async function checkAnswer(answerButton: HTMLElement) {
+    const currentDisplayTranslateWord = document.querySelector('.sprint-questions__translation').innerHTML;
+    const currentDisplayWord = document.querySelector('.sprint-questions__english-word').innerHTML;
+    // const word = findDataOfWord(currentDisplayWord);
+
+    if (answerButton.dataset.answer === currentDisplayTranslateWord) {
+        const word = findDataOfWord(currentDisplayWord);
+        takeActionOnCorrectAnswer(word);
     } else {
-        playSound('false');
-        storageForBestSeries.add(correctAnswersSeries.get());
-        correctAnswersSeries.reset();
-        storageForWrongAnswers.addData(findDataOfWord(word));
+        const word = findDataOfWord(currentDisplayWord);
+        takeActionOnWrongAnswer(word);
     }
+
     changeStyleAndScoreByAnswer(correctAnswersSeries.get());
 }
 
 const resetCounters = () => {
-    const counters = [wordIndexCounter, sprintScore, cupCounter, correctAnswersSeries];
+    const counters = [wordIndexCounter, sprintScore, cupCounter, correctAnswersSeries, newWordsCounter];
     counters.forEach((counter) => counter.reset());
 };
 
