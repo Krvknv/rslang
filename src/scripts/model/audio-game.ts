@@ -1,7 +1,8 @@
-import { Tword } from './types';
+import { Tword, GameResults } from './types';
 import { COMMON_URL } from './api/constants';
 import { changeResultModalVisibility } from './game-modal-visibility';
 import { getDate } from './get-date';
+import { sendGameResults } from './api/statistics';
 
 class AudioGame {
     words: Array<Tword>;
@@ -69,7 +70,7 @@ class AudioGame {
         return this.stats.filter((stat) => !stat.result).length;
     }
 
-    generateResults() {
+    generateResults(): GameResults {
         return {
             gameName: 'Audiochallenge',
             numberOfCorrectAnswers: this.getRightAnswersCount(),
@@ -77,7 +78,7 @@ class AudioGame {
             bestSeriesOfCorrectAnswer: this.longestStreak,
             score: 0,
             date: getDate(),
-            // numberOfNewWords: ,
+            numberOfNewWords: 0,
         };
     }
 }
@@ -154,7 +155,7 @@ export function nextRound() {
     } else {
         renderAudioGameResults();
         const gameResults = game.generateResults(); // TODO sending result to db
-        console.log(gameResults);
+        sendGameResults(gameResults);
     }
 }
 
