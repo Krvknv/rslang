@@ -295,6 +295,13 @@
   .audiochallenge__icon {
     width: 100px;
     margin-bottom: 50px;
+    cursor: pointer;
+  }
+
+  .audiochallenge__icon:hover {
+    transform: translateY(-1px);
+    filter: brightness(125%);
+    transition: 0.3s;
   }
 
   #audiochallenge-skip-btn {
@@ -310,7 +317,7 @@
   }
   
   #audiochallenge-skip-btn:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 }
 
@@ -330,6 +337,13 @@
     height: 50px;
     border-radius: 50px;
     background-color: $mainColor;
+    cursor: pointer;
+  }
+
+  .audiochallenge-answer__option:hover {
+    transform: translateY(-1px);
+    filter: brightness(125%);
+    transition: 0.3s;
   }
 }
 
