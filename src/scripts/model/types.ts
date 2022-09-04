@@ -76,3 +76,13 @@ export type TFullWord = {
     wordTranslate: string;
     difficulty?: string;
 };
+
+export interface GameResults {
+    gameName: string;
+    numberOfCorrectAnswers: number;
+    numberOfWrongAnswers: number;
+    bestSeriesOfCorrectAnswer: number;
+    score: number;
+    date: string;
+    numberOfNewWords: number;
+}
