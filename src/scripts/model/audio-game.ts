@@ -107,7 +107,11 @@ function updateGameView(word: Tword): void {
     const audioElement = document.getElementById('audiochallenge__audio') as HTMLAudioElement;
     audioElement.src = `${COMMON_URL}${word.audio}`;
     audioElement.play();
-    audioIcon.addEventListener('click', () => audioElement.play());
+    audioIcon.addEventListener('click', () => {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+        audioElement.play();
+    });
 
     const answerVariants = game.getAnswerVariants(word.word);
     const answerOptionBtns = document.querySelectorAll('.audiochallenge-answer__option');
