@@ -1,4 +1,3 @@
-import { getWords } from './api/words';
 import { Tword } from './types';
 import { COMMON_URL } from './api/constants';
 import { changeResultModalVisibility } from './game-modal-visibility';
@@ -149,18 +148,9 @@ export function checkAnswer(btn: Element) {
     nextRound();
 }
 
-export function addLevelListeners(): void {
-    const levelBtns = document.querySelectorAll('.level');
-    levelBtns.forEach((btn) => {
-        (btn as HTMLElement).addEventListener('click', () => {
-            const level = parseInt(btn.innerHTML, 10) - 1;
-            const page = Math.ceil(Math.random() * 5);
-            getWords(page, level).then((words) => {
-                wordsArray = randomizeWords(words);
-                game = new AudioGame(wordsArray);
-                cacheAudio(game.words);
-                updateGameView(game.words[game.wordIndex]);
-            });
-        });
-    });
+export function startAudioGame(words: Array<Tword>): void {
+    wordsArray = randomizeWords(words);
+    game = new AudioGame(wordsArray);
+    cacheAudio(game.words);
+    updateGameView(game.words[game.wordIndex]);
 }
