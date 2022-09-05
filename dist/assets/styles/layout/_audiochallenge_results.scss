@@ -9,3 +9,9 @@
         background-color: lightgrey;
     }
 }
+.result-modal__window {
+    color: $fontMainColor;
+    border: 1px solid $mainColor;
+    border-radius: 20px;
+    padding: 30px;
+}
