@@ -100,6 +100,9 @@ const createDayStatisticsByWords = async () => {
 const createDayStatisticsBySprint = () => {
     const wrapper = createNode('div', 'wrapper-sprint-day');
 
+    const gameName = createNode('span', 'statistics-game-name');
+    gameName.textContent = 'Спринт';
+
     const newWordsWrapper = createNode('div', 'statistics-sprint-day-item');
     const newWordsText = createNode('span', 'statistics-day-item');
     newWordsText.textContent = 'Количество новых слов за день:';
@@ -123,12 +126,15 @@ const createDayStatisticsBySprint = () => {
 
     seriesAnswerWrapper.append(seriesAnswerText, seriesAnswervalue);
 
-    wrapper.append(newWordsWrapper, rightAnswerWrapper, seriesAnswerWrapper);
+    wrapper.append(gameName, newWordsWrapper, rightAnswerWrapper, seriesAnswerWrapper);
 
     return wrapper;
 };
 const createDayStatisticsByChallenge = () => {
     const wrapper = createNode('div', 'wrapper-challenge-day');
+
+    const gameName = createNode('span', 'statistics-game-name');
+    gameName.textContent = 'Аудиовызов';
 
     const newWordsWrapper = createNode('div', 'statistics-challenge-day-item');
     const newWordsText = createNode('span', 'statistics-day-item');
@@ -153,7 +159,7 @@ const createDayStatisticsByChallenge = () => {
 
     seriesAnswerWrapper.append(seriesAnswerText, seriesAnswervalue);
 
-    wrapper.append(newWordsWrapper, rightAnswerWrapper, seriesAnswerWrapper);
+    wrapper.append(gameName, newWordsWrapper, rightAnswerWrapper, seriesAnswerWrapper);
 
     return wrapper;
 };

@@ -36,10 +36,15 @@
     justify-content: space-between;
     color: $fontMainColor;
 }
-.statistics-day-item-value {
+.statistics-day-item-value,
+.statistics-game-name {
     font-weight: 700;
 }
 
 .chart-wrapper {
     margin-bottom: 100px;
+}
+.statistics-game-name {
+    text-align: center;
+    margin-bottom: 10px;
 }

@@ -110,3 +110,13 @@ export type TPages = {
     prev: number;
     next: number;
 };
+
+// export type TGameResultsSprint = {
+//     gameName: string;
+//     numberOfCorrectAnswers: number;
+//     numberOfWrongAnswers: number;
+//     bestSeriesOfCorrectAnswer: number;
+//     score: number;
+//     date: string;
+//     numberOfNewWords: number;
+// };
