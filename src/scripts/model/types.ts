@@ -97,3 +97,9 @@ export interface GameResults {
     date: string;
     numberOfNewWords: number;
 }
+
+export type TPages = {
+    current: number;
+    prev: number;
+    next: number;
+};

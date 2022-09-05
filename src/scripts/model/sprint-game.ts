@@ -3,7 +3,7 @@ import { getWords } from './api/words';
 import { changeResultModalVisibility } from './game-modal-visibility';
 import { createOrUpdateWordsForUser } from './sprint-save-user-words';
 import { getDate } from './get-date';
-import { Tword } from './types';
+import { TPages, Tword } from './types';
 
 // --------------counters--------------
 export const makeCounter = () => {
@@ -155,9 +155,16 @@ export const sprintGameTimer = () => {
 
 const getRandomNumber = (min: number, max: number) => Math.floor(min + Math.random() * (max + 1 - min));
 
-const getPagesForGame = () => {
+export const getPagesForGame = (callFrom: string): TPages => {
     const [firstPage, lastPage] = [0, 29];
-    const currentPage = getRandomNumber(firstPage, lastPage);
+    let currentPage;
+
+    if (callFrom === 'textbook') {
+        currentPage = +localStorage.getItem('textbookPage') - 1;
+    } else {
+        currentPage = getRandomNumber(firstPage, lastPage);
+    }
+
     let prevPage;
     let nextPage;
 
@@ -184,8 +191,7 @@ const getPagesForGame = () => {
     };
 };
 
-export async function getWordsForGame(groupNumber: number) {
-    const pages = getPagesForGame();
+export async function getWordsForGame(groupNumber: number, pages: TPages) {
     const wordsFromCurrentPage = await getWords(pages.current, groupNumber);
     const wordsFromPrevPage = await getWords(pages.prev, groupNumber);
     const wordsFromNextPage = await getWords(pages.next, groupNumber);
@@ -243,7 +249,6 @@ export function displayWords() {
     const randomTranslateWord = words[wordIndex][getRandomNumber(2, 3)];
     const trueTranslate = words[wordIndex][2];
     const falseTranslate = words[wordIndex][3];
-    // console.log(englishWord, trueTranslate);
     insertWordsForGame(englishWord, randomTranslateWord);
     setDataAttributeForButtons(trueTranslate, falseTranslate);
     wordIndexCounter.incrementBy(1);
@@ -357,7 +362,6 @@ function takeActionOnWrongAnswer(word: Tword) {
 export async function checkAnswer(answerButton: HTMLElement) {
     const currentDisplayTranslateWord = document.querySelector('.sprint-questions__translation').innerHTML;
     const currentDisplayWord = document.querySelector('.sprint-questions__english-word').innerHTML;
-    // const word = findDataOfWord(currentDisplayWord);
 
     if (answerButton.dataset.answer === currentDisplayTranslateWord) {
         const word = findDataOfWord(currentDisplayWord);
