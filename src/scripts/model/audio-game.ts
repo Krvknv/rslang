@@ -3,6 +3,7 @@ import { COMMON_URL } from './api/constants';
 import { changeResultModalVisibility } from './game-modal-visibility';
 import { getDate } from './get-date';
 import { sendGameResults } from './api/statistics';
+import { getUserWord, createUserWord, updateUserWord } from './api/words';
 
 class AudioGame {
     words: Array<Tword>;
@@ -23,6 +24,8 @@ class AudioGame {
 
     rightAnswers: number;
 
+    newWords: number;
+
     constructor(words: Array<Tword>) {
         this.words = words;
         this.wordIndex = 0;
@@ -31,6 +34,7 @@ class AudioGame {
         this.streak = 0;
         this.longestStreak = 0;
         this.rightAnswers = 0;
+        this.newWords = 0;
 
         this.words.forEach((word) => {
             this.wordsArray.push(word.word);
@@ -80,7 +84,7 @@ class AudioGame {
             bestSeriesOfCorrectAnswer: this.longestStreak,
             score: 0,
             date: getDate(),
-            numberOfNewWords: 0,
+            numberOfNewWords: this.newWords,
         };
     }
 }
@@ -138,6 +142,7 @@ function renderAudioGameResults() {
 
     resultModalWindow.innerHTML = `
     <div>Результаты игры:</div>
+    <div>Новых слов: ${game.newWords}</div>
     <table class="audiochallenge__results" id="game-view__results-list">
     </table>
     `;
@@ -165,7 +170,7 @@ export function nextRound() {
         updateGameView(game.words[game.wordIndex]);
     } else {
         renderAudioGameResults();
-        const gameResults = game.generateResults(); // TODO sending result to db
+        const gameResults = game.generateResults();
         sendGameResults(gameResults);
     }
 }
@@ -186,6 +191,42 @@ function resetAnswersHighlight() {
     });
 }
 
+function updateWordStatus(word: Tword, answerResult: boolean) {
+    const wordId = word.id;
+    getUserWord(wordId).then(
+        (res) => {
+            res.optional.count++;
+            res.optional.correctAnswer += answerResult ? 1 : 0;
+            res.optional.wrongAnswer += !answerResult ? 1 : 0;
+
+            const responseWord = {
+                difficulty: res.difficulty,
+                optional: {
+                    count: res.count,
+                    correctAnswer: res.correctAnswer,
+                    wrongAnswer: res.wrongAnswer,
+                },
+            };
+            updateUserWord(res.wordId, responseWord).then(() => {
+                nextRound();
+            });
+        },
+        () => {
+            game.newWords += 1;
+            createUserWord(wordId, {
+                difficulty: 'medium',
+                optional: {
+                    count: 1,
+                    correctAnswer: answerResult ? 1 : 0,
+                    wrongAnswer: !answerResult ? 1 : 0,
+                },
+            }).then(() => {
+                nextRound();
+            });
+        }
+    );
+}
+
 export function checkAudioAnswer(btn: Element) {
     const result = (btn as HTMLElement).dataset.word === game.words[game.wordIndex].word;
     if (result) {
@@ -200,7 +241,7 @@ export function checkAudioAnswer(btn: Element) {
     game.updateStats(word, translation, result);
     highlighRightAnswer();
     setTimeout(() => {
-        nextRound();
+        updateWordStatus(game.words[game.wordIndex], result);
         resetAnswersHighlight();
     }, 500);
 }
@@ -210,7 +251,7 @@ export function skipAnswer() {
     const word = game.words[game.wordIndex].word as string;
     const translation = game.words[game.wordIndex].wordTranslate as string;
     game.updateStats(word, translation, false);
-    nextRound();
+    updateWordStatus(game.words[game.wordIndex], false);
 }
 
 export function startAudioGame(words: Array<Tword>): void {

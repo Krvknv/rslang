@@ -14,7 +14,7 @@ export function sendGameResults(gameResults: GameResults) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            learnedWords: 0, // TODO взять количество изученных слов
+            learnedWords: gameResults.numberOfCorrectAnswers,
             optional: gameResults,
         }),
     });
