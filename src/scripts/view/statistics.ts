@@ -3,10 +3,29 @@ import { getMarkedWords } from '../model/api/words';
 import { createNode } from '../model/create-node';
 import { getDate } from '../model/get-date';
 import { authorization } from '../model/store';
+import { prepareData } from '../model/textbook-page';
 import { TMarkedWord } from '../model/types';
 
 Chart.register(...registerables);
 
+const checkGameInfo = (gameName: string) => {
+    const date = getDate();
+    if (gameName === 'sprint') {
+        const gameInfo = JSON.parse(localStorage.getItem('SprintGameResult'));
+        if (gameInfo.date === date) {
+            return gameInfo;
+        } else {
+            return false;
+        }
+    } else if (gameName === 'audio') {
+        const gameInfo = JSON.parse(localStorage.getItem('AudioGameResult'));
+        if (gameInfo.date === date) {
+            return gameInfo;
+        } else {
+            return false;
+        }
+    }
+};
 const getLearntWords = async () => {
     const markedWord = await getMarkedWords();
     const learntWords = markedWord.filter((item: TMarkedWord) => item.difficulty === 'learnt');
@@ -65,8 +84,50 @@ const createSubtitle = (className: string, text: string) => {
 
     return subtitle;
 };
+const prepareDayStatistics = () => {
+    const audioInfo = checkGameInfo('audio');
+    const sprintInfo = checkGameInfo('sprint');
 
+    const dayStatistics = {
+        newWords: 0,
+        percent: '0',
+    };
+    if (audioInfo && sprintInfo) {
+        dayStatistics.newWords += audioInfo.numberOfNewWords + sprintInfo.numberOfNewWords;
+        dayStatistics.percent =
+            String(
+                Math.trunc(100 * (audioInfo.numberOfCorrectAnswers + sprintInfo.numberOfCorrectAnswers)) /
+                    (audioInfo.numberOfCorrectAnswers +
+                        audioInfo.numberOfWrongAnswers +
+                        sprintInfo.numberOfCorrectAnswers +
+                        sprintInfo.numberOfWrongAnswers)
+            ) + '% ';
+    }
+    if (audioInfo) {
+        dayStatistics.newWords += audioInfo.numberOfNewWords;
+        dayStatistics.percent =
+            String(
+                Math.trunc(
+                    (100 * audioInfo.numberOfCorrectAnswers) /
+                        (audioInfo.numberOfCorrectAnswers + audioInfo.numberOfWrongAnswers)
+                )
+            ) + '%';
+    }
+    if (sprintInfo) {
+        dayStatistics.newWords += sprintInfo.numberOfNewWords;
+        dayStatistics.percent =
+            String(
+                Math.trunc(
+                    (100 * sprintInfo.numberOfCorrectAnswers) /
+                        (sprintInfo.numberOfCorrectAnswers + sprintInfo.numberOfWrongAnswers)
+                )
+            ) + '%';
+    }
+    return dayStatistics;
+};
 const createDayStatisticsByWords = async () => {
+    const dayStatistics = prepareDayStatistics();
+
     const wrapper = createNode('div', 'wrapper-words-day');
     const amountLearntWordsLoday = await getAmountLearntWordsToday();
 
@@ -74,7 +135,7 @@ const createDayStatisticsByWords = async () => {
     const newWordsText = createNode('span', 'statistics-day-item');
     newWordsText.textContent = 'Количество новых слов за день:';
     const newWordsvalue = createNode('span', 'statistics-day-item-value');
-    newWordsvalue.textContent = 'добавить';
+    newWordsvalue.textContent = String(dayStatistics.newWords);
 
     newWordsWrapper.append(newWordsText, newWordsvalue);
 
@@ -90,7 +151,7 @@ const createDayStatisticsByWords = async () => {
     const rightAnswerText = createNode('span', 'statistics-day-item');
     rightAnswerText.textContent = 'Процент правильных ответов:';
     const rightAnswervalue = createNode('span', 'statistics-day-item-value');
-    rightAnswervalue.textContent = 'добавить';
+    rightAnswervalue.textContent = dayStatistics.percent;
     rightAnswerWrapper.append(rightAnswerText, rightAnswervalue);
 
     wrapper.append(newWordsWrapper, learntWordsWrapper, rightAnswerWrapper);
@@ -98,6 +159,7 @@ const createDayStatisticsByWords = async () => {
     return wrapper;
 };
 const createDayStatisticsBySprint = () => {
+    const gameInfo = checkGameInfo('sprint');
     const wrapper = createNode('div', 'wrapper-sprint-day');
 
     const gameName = createNode('span', 'statistics-game-name');
@@ -107,7 +169,7 @@ const createDayStatisticsBySprint = () => {
     const newWordsText = createNode('span', 'statistics-day-item');
     newWordsText.textContent = 'Количество новых слов за день:';
     const newWordsvalue = createNode('span', 'statistics-day-item-value');
-    newWordsvalue.textContent = 'добавить';
+    newWordsvalue.textContent = gameInfo ? gameInfo.numberOfNewWords : '0';
 
     newWordsWrapper.append(newWordsText, newWordsvalue);
 
@@ -115,14 +177,21 @@ const createDayStatisticsBySprint = () => {
     const rightAnswerText = createNode('span', 'statistics-day-item');
     rightAnswerText.textContent = 'Процент правильных ответов:';
     const rightAnswervalue = createNode('span', 'statistics-day-item-value');
-    rightAnswervalue.textContent = 'добавить';
+    rightAnswervalue.textContent = gameInfo
+        ? String(
+              Math.trunc(
+                  (100 * gameInfo.numberOfCorrectAnswers) /
+                      (gameInfo.numberOfCorrectAnswers + gameInfo.numberOfWrongAnswers)
+              )
+          ) + '%'
+        : '0';
     rightAnswerWrapper.append(rightAnswerText, rightAnswervalue);
 
     const seriesAnswerWrapper = createNode('div', 'statistics-sprint-day-item');
     const seriesAnswerText = createNode('span', 'statistics-day-item');
     seriesAnswerText.textContent = 'Cамая длинная серия правильных ответов:';
     const seriesAnswervalue = createNode('span', 'statistics-day-item-value');
-    seriesAnswervalue.textContent = 'добавить';
+    seriesAnswervalue.textContent = gameInfo ? gameInfo.bestSeriesOfCorrectAnswer : '0';
 
     seriesAnswerWrapper.append(seriesAnswerText, seriesAnswervalue);
 
@@ -131,6 +200,7 @@ const createDayStatisticsBySprint = () => {
     return wrapper;
 };
 const createDayStatisticsByChallenge = () => {
+    const gameInfo = checkGameInfo('audio');
     const wrapper = createNode('div', 'wrapper-challenge-day');
 
     const gameName = createNode('span', 'statistics-game-name');
@@ -140,7 +210,7 @@ const createDayStatisticsByChallenge = () => {
     const newWordsText = createNode('span', 'statistics-day-item');
     newWordsText.textContent = 'Количество новых слов за день:';
     const newWordsvalue = createNode('span', 'statistics-day-item-value');
-    newWordsvalue.textContent = 'добавить';
+    newWordsvalue.textContent = gameInfo ? gameInfo.numberOfNewWords : '0';
 
     newWordsWrapper.append(newWordsText, newWordsvalue);
 
@@ -148,14 +218,21 @@ const createDayStatisticsByChallenge = () => {
     const rightAnswerText = createNode('span', 'statistics-day-item');
     rightAnswerText.textContent = 'Процент правильных ответов:';
     const rightAnswervalue = createNode('span', 'statistics-day-item-value');
-    rightAnswervalue.textContent = 'добавить';
+    rightAnswervalue.textContent = gameInfo
+        ? String(
+              Math.trunc(
+                  (100 * gameInfo.numberOfCorrectAnswers) /
+                      (gameInfo.numberOfCorrectAnswers + gameInfo.numberOfWrongAnswers)
+              )
+          ) + '%'
+        : '0';
     rightAnswerWrapper.append(rightAnswerText, rightAnswervalue);
 
     const seriesAnswerWrapper = createNode('div', 'statistics-challenge-day-item');
     const seriesAnswerText = createNode('span', 'statistics-day-item');
     seriesAnswerText.textContent = 'Cамая длинная серия правильных ответов:';
     const seriesAnswervalue = createNode('span', 'statistics-day-item-value');
-    seriesAnswervalue.textContent = 'добавить';
+    seriesAnswervalue.textContent = gameInfo ? gameInfo.bestSeriesOfCorrectAnswer : '0';
 
     seriesAnswerWrapper.append(seriesAnswerText, seriesAnswervalue);
 

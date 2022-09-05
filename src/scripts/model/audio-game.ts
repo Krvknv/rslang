@@ -171,7 +171,8 @@ export function nextRound() {
     } else {
         renderAudioGameResults();
         const gameResults = game.generateResults();
-        sendGameResults(gameResults);
+        localStorage.setItem('AudioGameResult', JSON.stringify(gameResults));
+        // sendGameResults(gameResults);
     }
 }
 
