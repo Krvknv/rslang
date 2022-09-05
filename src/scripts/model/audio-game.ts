@@ -9,6 +9,7 @@ class AudioGame {
 
     stats: Array<{
         word: string;
+        translation: string;
         result: boolean;
     }>;
 
@@ -55,9 +56,10 @@ class AudioGame {
         return arr.sort(() => Math.random() - 0.5);
     }
 
-    updateStats(word: string, result: boolean) {
+    updateStats(word: string, translation: string, result: boolean) {
         this.stats.push({
             word,
+            translation,
             result,
         });
     }
@@ -85,6 +87,10 @@ class AudioGame {
 
 let wordsArray: Array<Tword> = [];
 let game: AudioGame;
+
+export function isGameFinished() {
+    return game.stats.length >= game.wordsArray.length;
+}
 
 function randomizeWords(words: Array<Tword>): Array<Tword> {
     return words.sort(() => Math.random() - 0.5);
@@ -132,7 +138,7 @@ function renderAudioGameResults() {
 
     resultModalWindow.innerHTML = `
     <div>Результаты игры:</div>
-    <table id="game-view__results-list">
+    <table class="audiochallenge__results" id="game-view__results-list">
     </table>
     `;
 
@@ -140,13 +146,16 @@ function renderAudioGameResults() {
     let index = 1;
 
     game.stats.forEach((stat) => {
-        resultsList.innerHTML += `
-        <tr>
+        const tableRow = `
             <td>${index++}</td>
-            <td>${stat.word.toUpperCase()}</td>
-            <td>${stat.result ? 'правильно' : 'ошибка'}</td>
-        </tr>
+            <td>${stat.word}</td>
+            <td>${stat.translation}</td>
+            <td>${stat.result ? '✔️' : '❌'}</td>
         `;
+        resultsList.innerHTML +=
+            index % 2 === 0
+                ? `<tr class="audiochallenge__results__row_grey">${tableRow}</tr>`
+                : `<tr">${tableRow}</tr>`;
     });
 }
 
@@ -186,8 +195,9 @@ export function checkAudioAnswer(btn: Element) {
         game.streak = 0;
     }
     const word = game.words[game.wordIndex].word as string;
+    const translation = game.words[game.wordIndex].wordTranslate as string;
 
-    game.updateStats(word, result);
+    game.updateStats(word, translation, result);
     highlighRightAnswer();
     setTimeout(() => {
         nextRound();
@@ -198,7 +208,8 @@ export function checkAudioAnswer(btn: Element) {
 export function skipAnswer() {
     game.streak = 0;
     const word = game.words[game.wordIndex].word as string;
-    game.updateStats(word, false);
+    const translation = game.words[game.wordIndex].wordTranslate as string;
+    game.updateStats(word, translation, false);
     nextRound();
 }
 

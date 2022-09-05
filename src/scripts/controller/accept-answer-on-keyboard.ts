@@ -1,5 +1,5 @@
 import { checkAnswer, displayWords } from '../model/sprint-game';
-import { checkAudioAnswer, skipAnswer } from '../model/audio-game';
+import { checkAudioAnswer, skipAnswer, isGameFinished } from '../model/audio-game';
 
 export function acceptAnswersOnKeyboard(event: KeyboardEvent) {
     const hash = window.location.hash.slice(1);
@@ -16,7 +16,7 @@ export function acceptAnswersOnKeyboard(event: KeyboardEvent) {
         }
     }
 
-    if (hash === 'audiochallenge') {
+    if (hash === 'audiochallenge' && !isGameFinished()) {
         const answerBtns = document.querySelectorAll('.audiochallenge-answer__option');
 
         switch (event.code) {

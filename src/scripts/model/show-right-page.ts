@@ -5,6 +5,9 @@ import { registerStatistics, showStatisticsBtn } from '../view/statistics';
 import { showCards } from './textbook-page';
 import { addAudioGameListeners } from '../controller/audio-game-add-listeners';
 import { changeGameModalVisibility } from './game-modal-visibility';
+import { textbook } from '../model/store';
+import { getWords } from './api/words';
+import { startAudioGame } from './audio-game';
 
 export const changePage = async () => {
     const hash = window.location.hash.slice(1);
@@ -16,15 +19,21 @@ export const changePage = async () => {
             await showCards();
             break;
         case 'audiochallenge':
-            // if (pageName === 'textbook') {
-            //     renderGameView(hash);
-            //     changeGameModalVisibility('1', 'visible');
-            //     document.location.hash = 'homepage';
-            //     registerHomePage();
-            // } else {
-            renderGameMenu(menuContent.gameAudioChallenge, menuContent.gameAudioChallengeDescription);
-            renderGameView(hash);
-            // }
+            if (pageName === 'textbook') {
+                renderGameView(hash);
+
+                const { page, group } = textbook;
+                getWords(page - 1, group - 1).then((words) => {
+                    startAudioGame(words);
+                });
+
+                changeGameModalVisibility('1', 'visible');
+                document.location.hash = 'homepage';
+                registerHomePage();
+            } else {
+                renderGameMenu(menuContent.gameAudioChallenge, menuContent.gameAudioChallengeDescription);
+                renderGameView(hash);
+            }
             addAudioGameListeners();
             break;
         case 'sprint':
