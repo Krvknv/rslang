@@ -2,7 +2,8 @@ import { updateSignInBtn } from '../model/home-page';
 import { updateUser, clickEnterBtn } from '../controller/auth';
 import { showOrHideGameModal } from '../controller/show-or-hide-game-modal-window';
 import { changePage } from '../model/show-right-page';
-import { acceptAnswersOnKeyboard, startGame } from '../controller/sprint-event-listeners';
+import { startGame } from '../controller/sprint-event-listeners';
+import { acceptAnswersOnKeyboard } from '../controller/accept-answer-on-keyboard';
 import { authorization, loggedUser } from '../model/store';
 import { showStatisticsBtn } from './statistics';
 

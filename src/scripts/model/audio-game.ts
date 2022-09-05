@@ -9,6 +9,7 @@ class AudioGame {
 
     stats: Array<{
         word: string;
+        translation: string;
         result: boolean;
     }>;
 
@@ -42,22 +43,23 @@ class AudioGame {
         if (this.longestStreak < this.streak) this.longestStreak = this.streak;
     }
 
-    getAnswerVariants(word: string) {
+    getAnswerVariants(word: { eng: string; ru: string }) {
         const arr = [word];
 
         while (arr.length < 4) {
             const index = Math.round(Math.random() * (this.words.length - 1));
-            if (!arr.includes(this.wordsArray[index])) {
-                arr.push(this.wordsArray[index]);
+            if (!arr.filter((element) => element.eng === this.words[index].word).length) {
+                arr.push({ eng: this.words[index].word, ru: this.words[index].wordTranslate });
             }
         }
 
         return arr.sort(() => Math.random() - 0.5);
     }
 
-    updateStats(word: string, result: boolean) {
+    updateStats(word: string, translation: string, result: boolean) {
         this.stats.push({
             word,
+            translation,
             result,
         });
     }
@@ -85,6 +87,10 @@ class AudioGame {
 
 let wordsArray: Array<Tword> = [];
 let game: AudioGame;
+
+export function isGameFinished() {
+    return game.stats.length >= game.wordsArray.length;
+}
 
 function randomizeWords(words: Array<Tword>): Array<Tword> {
     return words.sort(() => Math.random() - 0.5);
@@ -114,11 +120,13 @@ function updateGameView(word: Tword): void {
         audioElement.play();
     });
 
-    const answerVariants = game.getAnswerVariants(word.word);
+    const answerVariants = game.getAnswerVariants({ eng: word.word, ru: word.wordTranslate });
     const answerOptionBtns = document.querySelectorAll('.audiochallenge-answer__option');
     let index = 0;
     answerOptionBtns.forEach((btn) => {
-        btn.innerHTML = answerVariants[index++];
+        (btn as HTMLElement).dataset.word = answerVariants[index].eng;
+        btn.innerHTML = answerVariants[index].ru;
+        index++;
     });
 }
 
@@ -130,7 +138,7 @@ function renderAudioGameResults() {
 
     resultModalWindow.innerHTML = `
     <div>Результаты игры:</div>
-    <table id="game-view__results-list">
+    <table class="audiochallenge__results" id="game-view__results-list">
     </table>
     `;
 
@@ -138,13 +146,16 @@ function renderAudioGameResults() {
     let index = 1;
 
     game.stats.forEach((stat) => {
-        resultsList.innerHTML += `
-        <tr>
+        const tableRow = `
             <td>${index++}</td>
-            <td>${stat.word.toUpperCase()}</td>
-            <td>${stat.result ? 'правильно' : 'ошибка'}</td>
-        </tr>
+            <td>${stat.word}</td>
+            <td>${stat.translation}</td>
+            <td>${stat.result ? '✔️' : '❌'}</td>
         `;
+        resultsList.innerHTML +=
+            index % 2 === 0
+                ? `<tr class="audiochallenge__results__row_grey">${tableRow}</tr>`
+                : `<tr">${tableRow}</tr>`;
     });
 }
 
@@ -162,7 +173,7 @@ export function nextRound() {
 function highlighRightAnswer() {
     const answerBtns = document.querySelectorAll('.audiochallenge-answer__option');
     answerBtns.forEach((btn) => {
-        if (btn.innerHTML.toLowerCase() === game.words[game.wordIndex].word) {
+        if ((btn as HTMLElement).dataset.word === game.words[game.wordIndex].word) {
             btn.classList.add('audiochallenge-answer__option_right');
         }
     });
@@ -175,20 +186,18 @@ function resetAnswersHighlight() {
     });
 }
 
-export function checkAnswer(btn: Element) {
-    const result = btn.innerHTML === game.words[game.wordIndex].word;
+export function checkAudioAnswer(btn: Element) {
+    const result = (btn as HTMLElement).dataset.word === game.words[game.wordIndex].word;
     if (result) {
-        // console.log('Right!');
         game.rightAnswers++;
         game.updateStreak();
     } else {
-        // console.log('Wrong!');
         game.streak = 0;
     }
-    // console.log(game.streak, game.longestStreak);
     const word = game.words[game.wordIndex].word as string;
+    const translation = game.words[game.wordIndex].wordTranslate as string;
 
-    game.updateStats(word, result);
+    game.updateStats(word, translation, result);
     highlighRightAnswer();
     setTimeout(() => {
         nextRound();
@@ -199,7 +208,8 @@ export function checkAnswer(btn: Element) {
 export function skipAnswer() {
     game.streak = 0;
     const word = game.words[game.wordIndex].word as string;
-    game.updateStats(word, false);
+    const translation = game.words[game.wordIndex].wordTranslate as string;
+    game.updateStats(word, translation, false);
     nextRound();
 }
 
