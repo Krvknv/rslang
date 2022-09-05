@@ -1,0 +1,50 @@
+.statistics-title {
+    margin-bottom: 60px;
+}
+
+.subtitle-day,
+.subtitle-all-words {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 50px;
+    color: $fontMainColor;
+}
+.statistics-day-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 100px;
+}
+.wrapper-words-day,
+.wrapper-sprint-day,
+.wrapper-challenge-day {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid $mainColor;
+    border-radius: 10px;
+    width: 310px;
+    padding: 20px;
+    gap: 10px;
+}
+.wrapper-sprint-day,
+.wrapper-challenge-day {
+    width: 360px;
+}
+.statistics-words-day-item,
+.statistics-sprint-day-item,
+.statistics-challenge-day-item {
+    display: flex;
+    justify-content: space-between;
+    color: $fontMainColor;
+}
+.statistics-day-item-value,
+.statistics-game-name {
+    font-weight: 700;
+}
+
+.chart-wrapper {
+    margin-bottom: 100px;
+}
+.statistics-game-name {
+    text-align: center;
+    margin-bottom: 10px;
+}

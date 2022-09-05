@@ -1,0 +1,107 @@
+.main {
+    padding-top: 30px;
+}
+.hero {
+    display: flex;
+    padding: 81px 0 170px 0;
+    justify-content: space-between;
+    align-items: center;
+    &__text {
+        max-width: 460px;
+        line-height: 21px;
+        color: $fontMainColor;
+    }
+
+    &__bg {
+        width: 600px;
+        height: 600px;
+        background-image: url('../svg/hero-bg.svg');
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+}
+
+.title {
+    font-size: 40px;
+    line-height: 48px;
+    color: $fontMainColor;
+    margin-bottom: 100px;
+    text-align: center;
+}
+.advantage__wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+.advantage__wrapper > * {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+.advantage__img {
+    width: 150px;
+    height: 150px;
+}
+.progress .advantage__img {
+    background-image: url('../svg/progress.svg');
+}
+.interface .advantage__img {
+    background-image: url('../svg/interface.svg');
+}
+.game .advantage__img {
+    background-image: url('../svg/game.svg');
+}
+.advantage__wrapper > * > .advantage__img {
+    background-position: center center;
+    background-size: contain;
+}
+.advantage__text {
+    font-size: 24px;
+    line-height: 39px;
+    color: $fontMainColor;
+}
+
+.team {
+    padding: 170px 0;
+}
+.team__wrapper {
+    display: flex;
+    justify-content: space-between;
+    color: $fontMainColor;
+}
+.team__wrapper > * {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.team__img {
+    width: 250px;
+    height: 250px;
+}
+.victor .team__img {
+    background-image: url('../svg/avatar-victor.svg');
+}
+.kristina .team__img {
+    background-image: url('../svg/avatar-kristina.svg');
+}
+.evgeniy .team__img {
+    background-image: url('../svg/avatar-evgeniy.svg');
+}
+.team__wrapper > * > .team__img {
+    background-position: center center;
+    background-size: contain;
+}
+.team__title {
+    font-size: 24px;
+    line-height: 39px;
+    font-weight: 500;
+}
+.team__text {
+    max-width: 250px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 19px;
+}

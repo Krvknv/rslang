@@ -1,0 +1,100 @@
+.card {
+    box-shadow: 2px 4px 4px 3px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    color: $fontMainColor;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 420px;
+    position: relative;
+    background-color: #fff;
+    padding-bottom: 35px;
+
+    &__img {
+        max-width: 420px;
+        height: 261px;
+        border-radius: 20px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin-bottom: 50px;
+    }
+    &__text {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        padding: 0 30px;
+        margin-bottom: 10px;
+    }
+    &__title {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    &__word {
+        font-size: 24px;
+        line-height: 29px;
+    }
+    &__transcription {
+        font-size: 16px;
+        line-height: 19px;
+    }
+    &__meanining,
+    &__example {
+        display: flex;
+        flex-direction: column;
+        font-size: 16px;
+        line-height: 19px;
+        gap: 10px;
+    }
+    &__voice {
+        background-image: url('../svg/sound.svg');
+        background-position: center center;
+        background-repeat: no-repeat;
+        width: 39px;
+        height: 39px;
+        position: absolute;
+        top: 280px;
+        right: 15px;
+        cursor: pointer;
+    }
+}
+.card__label-hard,
+.card__label-learnt {
+    position: absolute;
+    top: 290px;
+    left: 30px;
+    font-size: 16px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+.card__label-learnt {
+    color: $positiveColor;
+}
+
+.card__label-hard {
+    color: $alertColor;
+}
+.card__btns {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.btn-hard-word,
+.btn-learnt-word {
+    padding: 10px;
+    border: 1px solid $mainColor;
+    border-radius: 50px;
+    outline: none;
+    font-size: 16px;
+    text-transform: uppercase;
+    background-color: transparent;
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.marked-word {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset 2px 4px 30px 10px #c181ff;
+}

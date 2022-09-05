@@ -1,0 +1,49 @@
+.cover {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  cursor: pointer;
+}
+.modal {
+  max-width: 861px;
+  position: fixed;
+  background-color: #ffffff;
+  top: 50%;
+  left: 50%;
+  border-radius: 20px;
+  padding: 100px 145px 70px;
+  margin: 0 auto;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  &__title {
+      margin-bottom: 40px !important;
+  }
+  &__form {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 50px;
+  }
+  &__input {
+      width: 400px;
+      height: 60px;
+      padding: 0px 10px;
+      border-radius: 10px;
+      border: 1px solid $mainColor;
+      outline: none;
+  }
+  &__input.invalid {
+      border-color: $alertColor;
+  }
+}
+.subtitle {
+  font-size: 16px;
+  line-height: 19px;
+  background-color: transparent;
+  outline: none;
+  border: none;
+}
