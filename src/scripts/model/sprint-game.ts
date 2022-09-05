@@ -1,9 +1,9 @@
 import { renderSprintGameResult } from '../view/render-sprint-game-result';
-import { getWords } from './api/words';
+import { getAggregatedHardWords, getAggregatedWords, getWords } from './api/words';
 import { changeResultModalVisibility } from './game-modal-visibility';
 import { createOrUpdateWordsForUser } from './sprint-save-user-words';
 import { getDate } from './get-date';
-import { TPages, Tword } from './types';
+import { TFullWord, TPages, Tword } from './types';
 
 // --------------counters--------------
 export const makeCounter = () => {
@@ -191,18 +191,38 @@ export const getPagesForGame = (callFrom: string): TPages => {
     };
 };
 
-export async function getWordsForGame(groupNumber: number, pages: TPages) {
-    const wordsFromCurrentPage = await getWords(pages.current, groupNumber);
-    const wordsFromPrevPage = await getWords(pages.prev, groupNumber);
-    const wordsFromNextPage = await getWords(pages.next, groupNumber);
-    const wordsForGame = [...wordsFromCurrentPage, ...wordsFromPrevPage, ...wordsFromNextPage];
+export async function getWordsForGame(groupNumber: number, pages: TPages, callFrom: string) {
+    const user = localStorage.getItem('user');
 
-    localStorage.setItem('words', JSON.stringify(wordsForGame));
+    if (callFrom === 'textbook' && user) {
+        if (groupNumber === 6) {
+            const wordsForGame = await getAggregatedHardWords();
+            localStorage.setItem('words', JSON.stringify(wordsForGame));
+        } else {
+            const wordsFromCurrentPage = await getAggregatedWords(pages.current, groupNumber);
+            const wordsFromPrevPage = await getAggregatedWords(pages.prev, groupNumber);
+            const wordsFromNextPage = await getAggregatedWords(pages.next, groupNumber);
+            const wordsForGame = [...wordsFromCurrentPage, ...wordsFromPrevPage, ...wordsFromNextPage].filter(
+                (el: TFullWord) => el.userWord === undefined || el.userWord.difficulty !== 'learnt'
+            );
+
+            localStorage.setItem('words', JSON.stringify(wordsForGame));
+        }
+    } else {
+        const wordsFromCurrentPage = await getWords(pages.current, groupNumber);
+        const wordsFromPrevPage = await getWords(pages.prev, groupNumber);
+        const wordsFromNextPage = await getWords(pages.next, groupNumber);
+        const wordsForGame = [...wordsFromCurrentPage, ...wordsFromPrevPage, ...wordsFromNextPage];
+        localStorage.setItem('words', JSON.stringify(wordsForGame));
+    }
 }
 
 export function generateGroupOfWords() {
     const words = JSON.parse(localStorage.getItem('words') as string);
-    const wordsForGame = words.map((el: Tword) => [el.id, el.word, el.wordTranslate]);
+    const wordsForGame = words.map(({ id, _id, word, wordTranslate }: TFullWord) => {
+        const wordId = id || _id;
+        return [wordId, word, wordTranslate];
+    });
     const translateWords = words.map((el: Tword) => el.wordTranslate);
 
     for (let i = 0; i < wordsForGame.length; ) {

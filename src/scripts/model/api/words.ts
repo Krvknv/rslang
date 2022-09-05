@@ -117,3 +117,35 @@ export const updateUserWord = async (wordId: string, word: TUserWord) => {
         body: JSON.stringify(word),
     });
 };
+
+export const getAggregatedWords = async (page: number, group: number) => {
+    const { token, userId } = loggedUser;
+    const response = await fetch(
+        `${USER_WORDS_URL}/${userId}/aggregatedWords/?wordsPerPage=20&filter={"$and":[{"group":${group}, "page":${page}}]}`,
+        {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        }
+    );
+    const jsonResponse = await response.json();
+    return jsonResponse[0].paginatedResults;
+};
+
+export const getAggregatedHardWords = async () => {
+    const { token, userId } = loggedUser;
+    const response = await fetch(
+        `${USER_WORDS_URL}/${userId}/aggregatedWords/?wordsPerPage=600&filter={"userWord.difficulty":"hard"}`,
+        {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        }
+    );
+    const jsonResponse = await response.json();
+    return jsonResponse[0].paginatedResults;
+};

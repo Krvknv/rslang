@@ -19,7 +19,7 @@ export async function startGame(event: MouseEvent) {
         if (eventTarget.innerHTML === 'спринт') {
             const pages = getPagesForGame('textbook');
             const group = +localStorage.getItem('textbookGroup') - 1;
-            await getWordsForGame(+group, pages);
+            await getWordsForGame(+group, pages, 'textbook');
             generateGroupOfWords();
             displayWords();
             sprintTimerId = sprintGameTimer();
@@ -28,7 +28,7 @@ export async function startGame(event: MouseEvent) {
         if (eventTarget.classList.contains('level')) {
             const wordGroupNumber = eventTarget.dataset.wordGroup;
             const pages = getPagesForGame('menu');
-            await getWordsForGame(+wordGroupNumber, pages);
+            await getWordsForGame(+wordGroupNumber, pages, 'menu');
             generateGroupOfWords();
             displayWords();
             sprintTimerId = sprintGameTimer();

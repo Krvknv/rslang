@@ -59,14 +59,16 @@ export type TMarkedWord = {
     wordId?: string;
 };
 
+type TOptional = {
+    count: number;
+    correctAnswer: number;
+    wrongAnswer: number;
+};
+
 export type TUserWord = {
     difficulty: string;
     id?: string;
-    optional: {
-        count: number;
-        correctAnswer: number;
-        wrongAnswer: number;
-    };
+    optional: TOptional;
     wordId?: string;
 };
 
@@ -86,6 +88,11 @@ export type TFullWord = {
     textMeaningTranslate: string;
     wordTranslate: string;
     difficulty?: string;
+    optional?: TOptional;
+    _id?: string;
+    userWord?: {
+        difficulty: string;
+    };
 };
 
 export interface GameResults {
