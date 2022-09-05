@@ -52,19 +52,3 @@ export async function startGame(event: MouseEvent) {
         changeAudioStatus();
     }
 }
-
-export function acceptAnswersOnKeyboard(event: KeyboardEvent) {
-    const hash = window.location.hash.slice(1);
-    const falseButton = document.getElementById('sprint-false-btn');
-    const trueButton = document.getElementById('sprint-true-btn');
-
-    if (hash === 'sprint') {
-        if (event.code === 'ArrowRight') {
-            checkAnswer(trueButton);
-            displayWords();
-        } else if (event.code === 'ArrowLeft') {
-            checkAnswer(falseButton);
-            displayWords();
-        }
-    }
-}

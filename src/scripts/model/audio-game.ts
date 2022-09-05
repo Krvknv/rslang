@@ -175,7 +175,7 @@ function resetAnswersHighlight() {
     });
 }
 
-export function checkAnswer(btn: Element) {
+export function checkAudioAnswer(btn: Element) {
     const result = btn.innerHTML === game.words[game.wordIndex].word;
     if (result) {
         // console.log('Right!');

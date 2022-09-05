@@ -1,4 +1,4 @@
-import { checkAnswer, skipAnswer, startAudioGame } from '../model/audio-game';
+import { checkAudioAnswer, skipAnswer, startAudioGame } from '../model/audio-game';
 import { getWords } from '../model/api/words';
 
 function addLevelListeners(): void {
@@ -17,7 +17,7 @@ function addLevelListeners(): void {
 function addAnswersLinsteners(): void {
     const answerBtns = document.querySelectorAll('.audiochallenge-answer__option');
     answerBtns.forEach((btn) => {
-        btn.addEventListener('click', () => checkAnswer(btn));
+        btn.addEventListener('click', () => checkAudioAnswer(btn));
     });
 }
 
